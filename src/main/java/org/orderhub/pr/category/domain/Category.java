@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.orderhub.pr.category.dto.request.CategoryUpdateRequest;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.orderhub.pr.category.exception.ExceptionMessage.CANNOT_BE_YOUR_OWN_PARENT;
 
@@ -27,6 +28,9 @@ public class Category {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
     private Category parent;
+
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Category> children;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
