@@ -57,4 +57,15 @@ public class CategoryServiceImpl implements CategoryService {
         return CategoryUpdateResponse.of(currentCategory);
     }
 
+    @Transactional
+    public void categoryDelete(Long id) {
+        Category category = findById(id);
+        category.delete();
+    }
+
+    @Transactional
+    public void categoryRestore(Long id) {
+        Category category = findById(id);
+        category.restore();
+    }
 }

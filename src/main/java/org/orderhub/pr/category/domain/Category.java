@@ -32,6 +32,8 @@ public class Category {
     @Column(nullable = false)
     private CategoryType type;
 
+    private CategoryStatus status;
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -47,11 +49,24 @@ public class Category {
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
+        this.status = CategoryStatus.ACTIVE;
     }
 
     @PreUpdate
     protected void onUpdate() {
         this.updatedAt = LocalDateTime.now();
+    }
+
+    public void delete() {
+        this.status = CategoryStatus.DELETED;
+    }
+
+    public void restore() {
+        this.status = CategoryStatus.ACTIVE;
+    }
+
+    public boolean isActive() {
+        return this.status == CategoryStatus.ACTIVE;
     }
 
     public void applyUpdate(String newName, CategoryType newType, Category newParent) {
