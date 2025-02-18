@@ -2,6 +2,7 @@ package org.orderhub.pr.category.domain;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -30,6 +31,13 @@ public class Category {
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+
+    @Builder
+    public Category(String name, Category parent, CategoryType type) {
+        this.name = name;
+        this.parent = parent;
+        this.type = type;
+    }
 
     @PrePersist
     protected void onCreate() {
