@@ -22,6 +22,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
+import static org.orderhub.pr.category.exception.ExceptionMessage.CANNOT_BE_YOUR_OWN_CHILD;
 
 class CategoryServiceImplRegisterTest {
 
@@ -31,9 +32,28 @@ class CategoryServiceImplRegisterTest {
     @InjectMocks
     private CategoryServiceImpl categoryService;
 
+    private Category majorCategory;
+    private Category middleCategory;
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+
+        majorCategory = Category.builder()
+                .id(1L)
+                .name("전자제품")
+                .parent(null)
+                .type(CategoryType.MAJOR)
+                .build();
+
+        middleCategory = Category.builder()
+                .id(2L)
+                .name("스마트폰")
+                .type(CategoryType.MIDDLE)
+                .parent(majorCategory)
+                .build();
+
+        majorCategory.addChild(middleCategory);
     }
 
     @Test
@@ -106,5 +126,34 @@ class CategoryServiceImplRegisterTest {
 
         verify(categoryRepository, times(1)).findById(999L);
         verify(categoryRepository, never()).save(any(Category.class));
+    }
+
+    @Test
+    @DisplayName("부모 카테고리에 자식을 정상적으로 추가할 수 있어야 한다.")
+    void addChildTest() {
+        // Given
+        Category newChild = Category.builder()
+                .id(5L)
+                .name("갤럭시")
+                .type(CategoryType.MINOR)
+                .parent(null)
+                .build();
+
+        // When
+        majorCategory.addChild(newChild);
+
+        // Then
+        assertThat(majorCategory.getChildren()).hasSize(2); // 스마트폰, 갤럭시 포함
+        assertThat(majorCategory.getChildren()).extracting(Category::getName)
+                .contains("스마트폰", "갤럭시"); // 두 자식이 정상적으로 추가되었는지 확인
+    }
+
+    @Test
+    @DisplayName("자기 자신을 자식으로 추가할 경우 예외가 발생해야 한다.")
+    void addChildSelfTest() {
+        // When & Then
+        assertThatThrownBy(() -> majorCategory.addChild(majorCategory))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(CANNOT_BE_YOUR_OWN_CHILD);
     }
 }
