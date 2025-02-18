@@ -5,8 +5,11 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.orderhub.pr.category.dto.request.CategoryUpdateRequest;
 
 import java.time.LocalDateTime;
+
+import static org.orderhub.pr.category.exception.ExceptionMessage.CANNOT_BE_YOUR_OWN_PARENT;
 
 @Entity
 @Getter
@@ -51,5 +54,13 @@ public class Category {
         this.updatedAt = LocalDateTime.now();
     }
 
+    public void applyUpdate(String newName, CategoryType newType, Category newParent) {
+        if (newParent != null && newParent.equals(this)) {
+            throw new IllegalArgumentException(CANNOT_BE_YOUR_OWN_PARENT);
+        }
+        this.name = newName;
+        this.parent = newParent;
+        this.type = newType;
+    }
 
 }

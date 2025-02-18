@@ -4,7 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.orderhub.pr.category.domain.Category;
 import org.orderhub.pr.category.domain.CategoryType;
 import org.orderhub.pr.category.dto.request.CategoryRegisterRequest;
+import org.orderhub.pr.category.dto.request.CategoryUpdateRequest;
 import org.orderhub.pr.category.dto.response.CategoryRegisterResponse;
+import org.orderhub.pr.category.dto.response.CategoryUpdateResponse;
 import org.orderhub.pr.category.exception.ExceptionMessage;
 import org.orderhub.pr.category.repository.CategoryRepository;
 import org.orderhub.pr.category.service.CategoryService;
@@ -38,6 +40,21 @@ public class CategoryServiceImpl implements CategoryService {
                 .orElseThrow(() -> new NoSuchElementException(ExceptionMessage.NO_SUCH_CATEGORY));
     }
 
+    @Transactional
+    public CategoryUpdateResponse categoryUpdate(CategoryUpdateRequest request) {
+        Category currentCategory = findById(request.getId());
 
+        Category parentCategory = (request.getParentCategoryId() != null)
+                ? findById(request.getParentCategoryId())
+                : null;
+
+        currentCategory.applyUpdate(
+                request.getName(),
+                CategoryType.fromString(request.getCategoryType()),
+                parentCategory
+        );
+
+        return CategoryUpdateResponse.of(currentCategory);
+    }
 
 }
