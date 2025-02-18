@@ -27,14 +27,14 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
 
     public List<CategoryTreeResponse> getAllCategories() {
-        List<Category> rootCategories = categoryRepository.findByParentIsNull();
+        List<Category> rootCategories = categoryRepository.findAllWithChildren();
         return rootCategories.stream()
                 .map(CategoryTreeResponse::new)
                 .collect(Collectors.toList());
     }
 
     public List<CategoryTreeResponse> getAllCategoriesByActive() {
-        List<Category> rootCategories = categoryRepository.findByParentIsNullAndStatus(CategoryStatus.ACTIVE);
+        List<Category> rootCategories = categoryRepository.findWithChildrenAndStatus(CategoryStatus.ACTIVE);
         return rootCategories.stream()
                 .map(CategoryTreeResponse::new)
                 .collect(Collectors.toList());
