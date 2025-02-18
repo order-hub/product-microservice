@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.orderhub.pr.category.exception.ExceptionMessage.CANNOT_BE_YOUR_OWN_CHILD;
 import static org.orderhub.pr.category.exception.ExceptionMessage.CANNOT_BE_YOUR_OWN_PARENT;
 
 @Entity
@@ -82,6 +83,9 @@ public class Category {
     }
 
     public void addChild(Category child) {
+        if (child.equals(this)) {
+            throw new IllegalArgumentException(CANNOT_BE_YOUR_OWN_CHILD);
+        }
         this.children.add(child);
         child.setParent(this);
     }
