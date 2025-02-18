@@ -33,7 +33,8 @@ public class Category {
     private LocalDateTime updatedAt;
 
     @Builder
-    public Category(String name, Category parent, CategoryType type) {
+    public Category(Long id, String name, Category parent, CategoryType type) {
+        this.id = id;
         this.name = name;
         this.parent = parent;
         this.type = type;
