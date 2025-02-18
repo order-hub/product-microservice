@@ -3,22 +3,19 @@ package org.orderhub.pr.category.service.impl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.orderhub.pr.category.domain.Category;
 import org.orderhub.pr.category.domain.CategoryType;
-import org.orderhub.pr.category.dto.CategoryRegisterRequest;
-import org.orderhub.pr.category.dto.CategoryRegisterResponse;
+import org.orderhub.pr.category.dto.request.CategoryRegisterRequest;
+import org.orderhub.pr.category.dto.response.CategoryRegisterResponse;
 import org.orderhub.pr.category.exception.ExceptionMessage;
 import org.orderhub.pr.category.repository.CategoryRepository;
 
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;

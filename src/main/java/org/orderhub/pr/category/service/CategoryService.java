@@ -1,7 +1,7 @@
 package org.orderhub.pr.category.service;
 
-import org.orderhub.pr.category.dto.CategoryRegisterRequest;
-import org.orderhub.pr.category.dto.CategoryRegisterResponse;
+import org.orderhub.pr.category.dto.request.CategoryRegisterRequest;
+import org.orderhub.pr.category.dto.response.CategoryRegisterResponse;
 
 public interface CategoryService {
 

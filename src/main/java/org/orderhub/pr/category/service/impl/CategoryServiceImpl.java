@@ -3,8 +3,8 @@ package org.orderhub.pr.category.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.orderhub.pr.category.domain.Category;
 import org.orderhub.pr.category.domain.CategoryType;
-import org.orderhub.pr.category.dto.CategoryRegisterRequest;
-import org.orderhub.pr.category.dto.CategoryRegisterResponse;
+import org.orderhub.pr.category.dto.request.CategoryRegisterRequest;
+import org.orderhub.pr.category.dto.response.CategoryRegisterResponse;
 import org.orderhub.pr.category.exception.ExceptionMessage;
 import org.orderhub.pr.category.repository.CategoryRepository;
 import org.orderhub.pr.category.service.CategoryService;
@@ -37,5 +37,7 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException(ExceptionMessage.NO_SUCH_CATEGORY));
     }
+
+
 
 }

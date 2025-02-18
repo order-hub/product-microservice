@@ -1,4 +1,4 @@
-package org.orderhub.pr.category.dto;
+package org.orderhub.pr.category.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
