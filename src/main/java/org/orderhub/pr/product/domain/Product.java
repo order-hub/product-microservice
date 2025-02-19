@@ -6,8 +6,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.orderhub.pr.category.domain.Category;
+import org.orderhub.pr.util.HashMapConverter;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 @Entity
 @Getter
@@ -32,6 +34,10 @@ public class Product {
 
     @Enumerated(EnumType.STRING)
     private ConditionStatus conditionStatus;
+
+    @Column(columnDefinition = "jsonb")
+    @Convert(converter = HashMapConverter.class)
+    private Map<String, Object> attributes;
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
