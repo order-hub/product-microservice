@@ -7,6 +7,8 @@ import org.orderhub.pr.category.exception.ExceptionMessage;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.orderhub.pr.category.exception.ExceptionMessage.MAJOR_CANNOT_BE_CHILD;
+import static org.orderhub.pr.category.exception.ExceptionMessage.MINOR_CANNOT_BE_PARENT;
 
 class CategoryTest {
 
@@ -105,6 +107,39 @@ class CategoryTest {
         assertThat(subCategory.getName()).isEqualTo("Updated Sub");
         assertThat(subCategory.getType()).isEqualTo(CategoryType.MINOR);
         assertThat(subCategory.getParent()).isEqualTo(newParent);
+    }
+
+    @Test
+    @DisplayName("대분류(MAJOR)는 부모를 가질 수 없음")
+    void shouldThrowExceptionWhenMajorCategoryHasParent() {
+        // Given
+        Category invalidMajorCategory = Category.builder()
+                .id(4L)
+                .name("Invalid Major")
+                .parent(middleCategory) // ✅ 부모가 있는 MAJOR 카테고리
+                .type(CategoryType.MAJOR)
+                .build();
+
+        // When & Then
+        assertThatThrownBy(() -> invalidMajorCategory.applyUpdate("Invalid Major", CategoryType.MAJOR, middleCategory))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(MAJOR_CANNOT_BE_CHILD);
+    }
+
+    @Test
+    @DisplayName("소분류(MINOR)는 자식을 가질 수 없음")
+    void shouldThrowExceptionWhenSubCategoryHasChildren() {
+        // Given
+        Category invalidChild = Category.builder()
+                .id(5L)
+                .name("Invalid Child")
+                .type(CategoryType.MINOR)
+                .build();
+
+        // When & Then
+        assertThatThrownBy(() -> subCategory.addChild(invalidChild))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(MINOR_CANNOT_BE_PARENT);
     }
 
 }
