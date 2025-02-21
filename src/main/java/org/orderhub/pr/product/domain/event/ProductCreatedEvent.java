@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.orderhub.pr.product.dto.request.ProductImageRegisterRequest;
 import org.springframework.web.multipart.MultipartFile;
 
 @Getter
@@ -11,7 +12,6 @@ import org.springframework.web.multipart.MultipartFile;
 @Builder
 public class ProductCreatedEvent {
 
-    private final Long productId;
-    private final MultipartFile multipartFile;
+    private final ProductImageRegisterRequest imageRequest;
 
 }

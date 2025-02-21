@@ -76,4 +76,8 @@ public class Product {
         return category.getParent() == null ? category : category.getParent();
     }
 
+    public void updateProductImage(ProductImage image) {
+        this.image = image;
+    }
+
 }

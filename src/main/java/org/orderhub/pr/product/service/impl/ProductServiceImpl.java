@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.orderhub.pr.category.service.CategoryService;
 import org.orderhub.pr.product.domain.Product;
 import org.orderhub.pr.product.domain.event.ProductCreatedEvent;
+import org.orderhub.pr.product.dto.request.ProductImageRegisterRequest;
 import org.orderhub.pr.product.dto.request.ProductRegisterRequest;
 import org.orderhub.pr.product.dto.request.ProductSearchRequest;
 import org.orderhub.pr.product.dto.response.ProductResponse;
@@ -58,7 +59,12 @@ public class ProductServiceImpl implements ProductService {
                 .build();
         productRepository.save(product);
 
-        eventPublisher.publishEvent(new ProductCreatedEvent(product.getId(), productImage));
+        eventPublisher.publishEvent(ProductCreatedEvent.builder().imageRequest(
+                ProductImageRegisterRequest.builder()
+                        .productId(product.getId())
+                        .image(productImage)
+                        .build()
+        ));
         return ProductResponse.from(product);
     }
 

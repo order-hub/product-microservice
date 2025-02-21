@@ -4,10 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.orderhub.pr.product.aop.annotation.ValidateImage;
 import org.orderhub.pr.product.dto.request.ProductImageRegisterRequest;
 import org.orderhub.pr.product.dto.request.ProductImageUpdateRequest;
-import org.orderhub.pr.product.service.ProductImageService;
+import org.orderhub.pr.product.service.ProductImageUploadService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
@@ -17,7 +16,7 @@ import java.net.URL;
 
 @Service
 @RequiredArgsConstructor
-public class S3ProductImageServiceImpl implements ProductImageService {
+public class S3ProductImageServiceImpl implements ProductImageUploadService {
 
     @Value("${aws.s3.bucket-name}")
     private String bucketName;
