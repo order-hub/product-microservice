@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.orderhub.pr.product.domain.Product;
 import org.orderhub.pr.product.domain.ProductImage;
 import org.orderhub.pr.product.dto.request.ProductImageRegisterRequest;
+import org.orderhub.pr.product.dto.request.ProductImageUpdateRequest;
 import org.orderhub.pr.product.repository.ProductRepository;
 import org.orderhub.pr.product.service.ProductImageService;
 import org.orderhub.pr.product.service.ProductImageUploadService;
@@ -28,6 +29,20 @@ public class ProductImageServiceImpl implements ProductImageService {
                 .orElseThrow(() -> new IllegalArgumentException(PRODUCT_NOT_FOUND));
 
         String imageUrl = productImageUploadService.registerProductImage(request);
+
+        product.updateProductImage(ProductImage.builder()
+                .imageUrl(imageUrl)
+                .build());
+
+        productRepository.save(product);
+    }
+
+    @Transactional
+    public void updateProductImage(ProductImageUpdateRequest request) throws IOException {
+        Product product = productRepository.findById(request.getProductId())
+                .orElseThrow(() -> new IllegalArgumentException(PRODUCT_NOT_FOUND));
+
+        String imageUrl = productImageUploadService.updateProductImage(request);
 
         product.updateProductImage(ProductImage.builder()
                 .imageUrl(imageUrl)
