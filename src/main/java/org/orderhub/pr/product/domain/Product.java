@@ -90,4 +90,8 @@ public class Product {
         this.conditionStatus = request.getConditionStatus();
     }
 
+    public void deleteProduct() {
+        this.saleStatus = SaleStatus.DELETED;
+    }
+
 }

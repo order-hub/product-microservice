@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.orderhub.pr.category.domain.Category;
 import org.orderhub.pr.category.service.CategoryService;
 import org.orderhub.pr.product.domain.Product;
+import org.orderhub.pr.product.domain.SaleStatus;
 import org.orderhub.pr.product.domain.event.ProductCreatedEvent;
 import org.orderhub.pr.product.dto.request.ProductImageRegisterRequest;
 import org.orderhub.pr.product.dto.request.ProductRegisterRequest;
@@ -40,6 +41,7 @@ public class ProductServiceImpl implements ProductService {
     public Page<ProductResponse> getProductByPage(Pageable pageable, ProductSearchRequest searchRequest) {
         Page<Product> productPage = customProductRepository.searchProducts(searchRequest, pageable);
         List<ProductResponse> productResponses = productPage.getContent().stream()
+                .filter(p -> !p.getSaleStatus().equals(SaleStatus.DELETED))
                 .map(ProductResponse::from)
                 .toList();
         return new PageImpl<>(productResponses, pageable, productPage.getTotalElements());
@@ -48,6 +50,16 @@ public class ProductServiceImpl implements ProductService {
     public Page<ProductResponse> getAllProducts(Pageable pageable) {
         Page<Product> productPage = productRepository.findAll(pageable);
         List<ProductResponse> productResponses = productPage.getContent().stream()
+                .filter(p -> !p.getSaleStatus().equals(SaleStatus.DELETED))
+                .map(ProductResponse::from)
+                .toList();
+        return new PageImpl<>(productResponses, pageable, productPage.getTotalElements());
+    }
+
+    public Page<ProductResponse> getDeletedProducts(Pageable pageable) {
+        Page<Product> productPage = productRepository.findAll(pageable);
+        List<ProductResponse> productResponses = productPage.getContent().stream()
+                .filter(p -> p.getSaleStatus().equals(SaleStatus.DELETED))
                 .map(ProductResponse::from)
                 .toList();
         return new PageImpl<>(productResponses, pageable, productPage.getTotalElements());
@@ -83,9 +95,11 @@ public class ProductServiceImpl implements ProductService {
         return ProductResponse.from(product);
     }
 
-
-
-
+    @Transactional
+    public void deleteProduct(Long productId) {
+        Product product = productRepository.findById(productId).orElseThrow(() -> new IllegalArgumentException(PRODUCT_NOT_FOUND));
+        product.deleteProduct();
+    }
 
 
 }
