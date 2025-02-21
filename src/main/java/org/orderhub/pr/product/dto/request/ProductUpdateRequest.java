@@ -1,14 +1,15 @@
-package org.orderhub.pr.product.dto;
+package org.orderhub.pr.product.dto.request;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductRegisterRequest {
+public class ProductUpdateRequest {
 
     private String name;
-
 }
