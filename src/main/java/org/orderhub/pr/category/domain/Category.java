@@ -9,8 +9,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.orderhub.pr.category.exception.ExceptionMessage.CANNOT_BE_YOUR_OWN_CHILD;
-import static org.orderhub.pr.category.exception.ExceptionMessage.CANNOT_BE_YOUR_OWN_PARENT;
+import static org.orderhub.pr.category.exception.ExceptionMessage.*;
 
 @Entity
 @Getter
@@ -78,6 +77,15 @@ public class Category {
         if (newParent != null && newParent.equals(this)) {
             throw new IllegalArgumentException(CANNOT_BE_YOUR_OWN_PARENT);
         }
+
+        if (newType == CategoryType.MAJOR && newParent != null) {
+            throw new IllegalArgumentException(MAJOR_CANNOT_BE_CHILD);
+        }
+
+        if (this.type == CategoryType.MINOR && !this.children.isEmpty()) {
+            throw new IllegalArgumentException(MINOR_CANNOT_BE_PARENT);
+        }
+
         this.name = newName;
         this.parent = newParent;
         this.type = newType;
@@ -86,6 +94,9 @@ public class Category {
     public void addChild(Category child) {
         if (child.equals(this)) {
             throw new IllegalArgumentException(CANNOT_BE_YOUR_OWN_CHILD);
+        }
+        if (this.type == CategoryType.MINOR) {
+            throw new IllegalArgumentException(MINOR_CANNOT_BE_PARENT);
         }
         this.children.add(child);
         child.setParent(this);
