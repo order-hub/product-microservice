@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.S3Utilities;
+import software.amazon.awssdk.services.s3.model.GetUrlRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 import java.io.IOException;
@@ -47,7 +49,14 @@ public class S3ProductImageServiceImpl implements ProductImageUploadService {
                 .build();
         s3Client.putObject(putObjectRequest,
                 software.amazon.awssdk.core.sync.RequestBody.fromBytes(file.getBytes()));
-        URL fileUrl = s3Client.utilities().getUrl(builder -> builder.bucket(bucketName).key(fileKey));
+        S3Utilities s3Utilities = s3Client.utilities();
+
+        GetUrlRequest getUrlRequest = GetUrlRequest.builder()
+                .bucket(bucketName)
+                .key(fileKey)
+                .build();
+
+        URL fileUrl = s3Utilities.getUrl(getUrlRequest);
         return fileUrl.toExternalForm();
     }
 
