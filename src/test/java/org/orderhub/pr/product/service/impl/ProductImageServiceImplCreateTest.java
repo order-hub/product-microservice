@@ -22,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 import static org.orderhub.pr.product.exception.ExceptionMessage.PRODUCT_NOT_FOUND;
 
-class ProductImageServiceImplTest {
+class ProductImageServiceImplCreateTest {
 
     private ProductImageService productImageService;
 
