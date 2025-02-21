@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.orderhub.pr.system.config.ImageConfig;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,19 +20,12 @@ import static org.orderhub.pr.product.exception.ExceptionMessage.*;
 @RequiredArgsConstructor
 public class ImageValidationAspect {
 
-    @Value("${aws.s3.max-file-size}")
-    private long maxFileSize;
-
-    @Value("${aws.s3.supported-extensions}")
-    private String supportedExtensions;
+    private final ImageConfig imageConfig;
 
     @Around("@annotation(org.orderhub.pr.product.aop.annotation.ValidateImage)")
     public Object validateImageSize(ProceedingJoinPoint joinPoint) throws Throwable {
         Object[] args = joinPoint.getArgs();
-
-        Set<String> validExtensions = Arrays.stream(supportedExtensions.split(","))
-                .map(String::trim)
-                .collect(Collectors.toSet());
+        Set<String> validExtensions = imageConfig.getSupportedExtensionsSet();
 
         Arrays.stream(args).forEach(arg -> {
             if (arg instanceof MultipartFile file) {
@@ -43,7 +37,7 @@ public class ImageValidationAspect {
     }
 
     private void validateFileSize(MultipartFile file) {
-        if (file.getSize() > maxFileSize) {
+        if (file.getSize() > imageConfig.getMaxFileSize()) {
             throw new IllegalArgumentException(FILE_SIZE_EXCEEDED);
         }
     }
