@@ -24,10 +24,10 @@ public class ProductImageServiceImpl implements ProductImageService {
 
     @Transactional
     public void processProductImage(ProductImageRegisterRequest request) throws IOException {
-        String imageUrl = productImageUploadService.registerProductImage(request);
-
         Product product = productRepository.findById(request.getProductId())
                 .orElseThrow(() -> new IllegalArgumentException(PRODUCT_NOT_FOUND));
+
+        String imageUrl = productImageUploadService.registerProductImage(request);
 
         product.updateProductImage(ProductImage.builder()
                 .imageUrl(imageUrl)
