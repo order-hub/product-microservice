@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.orderhub.pr.category.domain.Category;
+import org.orderhub.pr.product.dto.request.ProductUpdateRequest;
 import org.orderhub.pr.util.HashMapConverter;
 
 import java.time.Instant;
@@ -78,6 +79,14 @@ public class Product {
 
     public void updateProductImage(ProductImage image) {
         this.image = image;
+    }
+
+    public void updateProduct(ProductUpdateRequest request, Category updatedCategory) {
+        this.name = request.getName();
+        this.price = request.getPrice();
+        this.category = updatedCategory;
+        this.saleStatus = request.getSaleStatus();
+        this.conditionStatus = request.getConditionStatus();
     }
 
 }

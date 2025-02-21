@@ -19,6 +19,6 @@ public class ProductRegisterRequest {
     private Long categoryId;
     private SaleStatus saleStatus;
     private ConditionStatus conditionStatus;
-    private Long price;
+    private String price;
     private Map<String, Object> attributes;
 }

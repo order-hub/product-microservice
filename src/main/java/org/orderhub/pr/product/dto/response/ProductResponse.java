@@ -17,6 +17,7 @@ import java.util.Map;
 public class ProductResponse {
     private Long id;
     private String name;
+    private Long categoryId;
     private String categoryName;
     private SaleStatus saleStatus;
     private ConditionStatus conditionStatus;
@@ -28,6 +29,7 @@ public class ProductResponse {
         return ProductResponse.builder()
                 .id(product.getId())
                 .name(product.getName())
+                .categoryId(product.getCategory().getId())
                 .categoryName(product.getCategory().getName())
                 .saleStatus(product.getSaleStatus())
                 .conditionStatus(product.getConditionStatus())

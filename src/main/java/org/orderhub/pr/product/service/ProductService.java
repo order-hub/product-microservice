@@ -2,6 +2,7 @@ package org.orderhub.pr.product.service;
 
 import org.orderhub.pr.product.dto.request.ProductRegisterRequest;
 import org.orderhub.pr.product.dto.request.ProductSearchRequest;
+import org.orderhub.pr.product.dto.request.ProductUpdateRequest;
 import org.orderhub.pr.product.dto.response.ProductResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,4 +12,6 @@ public interface ProductService {
     Page<ProductResponse> getProductByPage(Pageable pageable, ProductSearchRequest searchRequest);
     Page<ProductResponse> getAllProducts(Pageable pageable);
     ProductResponse createProduct(ProductRegisterRequest request, MultipartFile productImage);
+    ProductResponse updateProduct(ProductUpdateRequest request, Long productId);
+
 }
