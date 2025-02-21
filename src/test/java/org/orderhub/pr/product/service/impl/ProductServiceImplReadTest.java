@@ -103,4 +103,56 @@ class ProductServiceImplReadTest {
         // verify: repository가 호출되었는지 확인
         verify(customProductRepository, times(1)).searchProducts(searchRequest, pageable);
     }
+
+    @Test
+    @DisplayName("삭제된 상품들만 필터링하여 반환하는지 검증")
+    void getDeletedProducts_ShouldReturnOnlyDeletedProducts() {
+        // Given
+        Product deletedProduct = Product.builder()
+                .name("Deleted Product")
+                .price("1500")
+                .image(ProductImage.builder().imageUrl("deleted.jpg").build())
+                .category(sampleProduct.getCategory())
+                .saleStatus(SaleStatus.DELETED)
+                .conditionStatus(ConditionStatus.EXPIRED)
+                .build();
+
+        List<Product> products = List.of(sampleProduct, deletedProduct);
+        Page<Product> productPage = new PageImpl<>(products, pageable, products.size());
+
+        when(productRepository.findAll(pageable)).thenReturn(productPage);
+
+        // When
+        Page<ProductResponse> result = productService.getDeletedProducts(pageable);
+
+        // Then
+        assertThat(result).isNotNull();
+        assertThat(result.getTotalElements()).isEqualTo(1);
+        assertThat(result.getContent().get(0).getName()).isEqualTo("Deleted Product");
+        assertThat(result.getContent().get(0).getSaleStatus()).isEqualTo(SaleStatus.DELETED);
+
+        // verify: repository가 호출되었는지 확인
+        verify(productRepository, times(1)).findAll(pageable);
+    }
+
+    @Test
+    @DisplayName("삭제된 상품이 없을 경우 빈 결과를 반환하는지 검증")
+    void getDeletedProducts_ShouldReturnEmptyWhenNoDeletedProducts() {
+        // Given
+        List<Product> products = List.of(sampleProduct);
+        Page<Product> productPage = new PageImpl<>(products, pageable, products.size());
+
+        when(productRepository.findAll(pageable)).thenReturn(productPage);
+
+        // When
+        Page<ProductResponse> result = productService.getDeletedProducts(pageable);
+
+        // Then
+        assertThat(result).isNotNull();
+        assertThat(result.getTotalElements()).isEqualTo(0);
+        assertThat(result.getContent()).isEmpty();
+
+        // verify: repository가 호출되었는지 확인
+        verify(productRepository, times(1)).findAll(pageable);
+    }
 }

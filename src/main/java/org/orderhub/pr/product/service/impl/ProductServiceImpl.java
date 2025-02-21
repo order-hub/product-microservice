@@ -44,7 +44,7 @@ public class ProductServiceImpl implements ProductService {
                 .filter(p -> !p.getSaleStatus().equals(SaleStatus.DELETED))
                 .map(ProductResponse::from)
                 .toList();
-        return new PageImpl<>(productResponses, pageable, productPage.getTotalElements());
+        return new PageImpl<>(productResponses, pageable, productResponses.size());
     }
 
     public Page<ProductResponse> getAllProducts(Pageable pageable) {
@@ -53,7 +53,7 @@ public class ProductServiceImpl implements ProductService {
                 .filter(p -> !p.getSaleStatus().equals(SaleStatus.DELETED))
                 .map(ProductResponse::from)
                 .toList();
-        return new PageImpl<>(productResponses, pageable, productPage.getTotalElements());
+        return new PageImpl<>(productResponses, pageable, productResponses.size());
     }
 
     public Page<ProductResponse> getDeletedProducts(Pageable pageable) {
@@ -62,7 +62,7 @@ public class ProductServiceImpl implements ProductService {
                 .filter(p -> p.getSaleStatus().equals(SaleStatus.DELETED))
                 .map(ProductResponse::from)
                 .toList();
-        return new PageImpl<>(productResponses, pageable, productPage.getTotalElements());
+        return new PageImpl<>(productResponses, pageable, productResponses.size());
     }
 
     @Transactional
