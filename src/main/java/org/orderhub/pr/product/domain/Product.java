@@ -69,12 +69,13 @@ public class Product {
 
     public Category getMajorCategory() {
         if (category == null) return null;
-        return category.getParent() != null ? category.getParent().getParent() : category.getParent();
+        Category parent = category.getParent();
+        return (parent != null && parent.getParent() != null) ? parent.getParent() : null;
     }
 
     public Category getMiddleCategory() {
         if (category == null) return null;
-        return category.getParent() == null ? category : category.getParent();
+        return category.getParent();
     }
 
     public void updateProductImage(ProductImage image) {
