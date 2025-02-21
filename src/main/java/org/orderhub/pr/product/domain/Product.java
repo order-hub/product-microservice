@@ -28,7 +28,8 @@ public class Product {
     @JoinColumn(name = "category_id", nullable = true)
     private Category category;
 
-    private String imageUrl;
+    @Embedded
+    private ProductImage image;
 
     @Enumerated(EnumType.STRING)
     private SaleStatus saleStatus;
@@ -44,10 +45,10 @@ public class Product {
     private Instant updatedAt;
 
     @Builder
-    public Product(String name, String price, String imageUrl, SaleStatus saleStatus, ConditionStatus conditionStatus, Category category) {
+    public Product(String name, String price, ProductImage image, SaleStatus saleStatus, ConditionStatus conditionStatus, Category category) {
         this.name = name;
         this.price = price;
-        this.imageUrl = imageUrl;
+        this.image = image;
         this.saleStatus = saleStatus;
         this.conditionStatus = conditionStatus;
         this.category = category;

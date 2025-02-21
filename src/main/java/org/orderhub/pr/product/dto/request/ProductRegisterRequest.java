@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.orderhub.pr.product.domain.ConditionStatus;
+import org.orderhub.pr.product.domain.Product;
 import org.orderhub.pr.product.domain.SaleStatus;
 
 import java.util.Map;
@@ -15,7 +16,7 @@ import java.util.Map;
 @Builder
 public class ProductRegisterRequest {
     private String name;
-    private String categoryName;
+    private Long categoryId;
     private SaleStatus saleStatus;
     private ConditionStatus conditionStatus;
     private Long price;

@@ -5,6 +5,7 @@ aws:
     access-key: ${AWS_ACCESS_KEY}
     secret-key: ${AWS_SECRET_KEY}
     max-file-size: ${MAX_FILE_SIZE}
+    supported-extensions: jpg,jpeg,png,webp
 
 spring:
   datasource:

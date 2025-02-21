@@ -53,7 +53,7 @@ public class CategoryServiceImpl implements CategoryService {
         return CategoryRegisterResponse.of(savedCategory);
     }
 
-    private Category findById(Long id) {
+    public Category findById(Long id) {
         return categoryRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException(ExceptionMessage.NO_SUCH_CATEGORY));
     }

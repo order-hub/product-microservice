@@ -1,5 +1,6 @@
 package org.orderhub.pr.category.service;
 
+import org.orderhub.pr.category.domain.Category;
 import org.orderhub.pr.category.dto.request.CategoryRegisterRequest;
 import org.orderhub.pr.category.dto.request.CategoryUpdateRequest;
 import org.orderhub.pr.category.dto.response.CategoryRegisterResponse;
@@ -11,5 +12,6 @@ public interface CategoryService {
     public CategoryUpdateResponse categoryUpdate(CategoryUpdateRequest request);
     public void categoryDelete(Long id);
     public void categoryRestore(Long id);
+    public Category findById(Long id);
 
 }
