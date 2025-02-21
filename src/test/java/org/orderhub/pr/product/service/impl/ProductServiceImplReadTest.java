@@ -10,6 +10,7 @@ import org.mockito.MockitoAnnotations;
 import org.orderhub.pr.category.domain.Category;
 import org.orderhub.pr.product.domain.ConditionStatus;
 import org.orderhub.pr.product.domain.Product;
+import org.orderhub.pr.product.domain.ProductImage;
 import org.orderhub.pr.product.domain.SaleStatus;
 import org.orderhub.pr.product.dto.request.ProductSearchRequest;
 import org.orderhub.pr.product.dto.response.ProductResponse;
@@ -49,7 +50,7 @@ class ProductServiceImplReadTest {
         sampleProduct = Product.builder()
                 .name("Test Product")
                 .price("1000")
-                .imageUrl("test.jpg")
+                .image(ProductImage.builder().imageUrl("test.jpg").build())
                 .category(mockCategory)
                 .saleStatus(SaleStatus.FOR_SALE)
                 .conditionStatus(ConditionStatus.NEW)
