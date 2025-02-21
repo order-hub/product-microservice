@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.orderhub.pr.category.dto.request.CategoryUpdateRequest;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,8 +39,8 @@ public class Category {
 
     private CategoryStatus status;
 
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private Instant createdAt;
+    private Instant updatedAt;
 
     @Builder
     public Category(Long id, String name, Category parent, CategoryType type) {
@@ -51,14 +52,14 @@ public class Category {
 
     @PrePersist
     protected void onCreate() {
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
+        this.createdAt = Instant.now();
+        this.updatedAt = Instant.now();
         this.status = CategoryStatus.ACTIVE;
     }
 
     @PreUpdate
     protected void onUpdate() {
-        this.updatedAt = LocalDateTime.now();
+        this.updatedAt = Instant.now();
     }
 
     public void delete() {

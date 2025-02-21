@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.orderhub.pr.category.domain.Category;
 import org.orderhub.pr.util.HashMapConverter;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Map;
 
@@ -39,8 +40,8 @@ public class Product {
     @Convert(converter = HashMapConverter.class)
     private Map<String, Object> attributes;
 
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private Instant createdAt;
+    private Instant updatedAt;
 
     @Builder
     public Product(String name, String price, String imageUrl, SaleStatus saleStatus, ConditionStatus conditionStatus, Category category) {
@@ -55,13 +56,13 @@ public class Product {
 
     @PrePersist
     protected void onCreate() {
-        createdAt = LocalDateTime.now();
-        updatedAt = LocalDateTime.now();
+        createdAt = Instant.now();
+        updatedAt = Instant.now();
     }
 
     @PreUpdate
     protected void onUpdate() {
-        updatedAt = LocalDateTime.now();
+        updatedAt = Instant.now();
     }
 
     public Category getMajorCategory() {
