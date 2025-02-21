@@ -33,7 +33,7 @@ public class ProductResponse {
                 .conditionStatus(product.getConditionStatus())
                 .price(product.getPrice())
                 .attributes(product.getAttributes())
-                .imageUrl(product.getImage().getImageUrl())
+                .imageUrl(product.getImage() == null ? null : product.getImage().getImageUrl())
                 .build();
     }
 }

@@ -59,12 +59,14 @@ public class ProductServiceImpl implements ProductService {
                 .build();
         productRepository.save(product);
 
-        eventPublisher.publishEvent(ProductCreatedEvent.builder().imageRequest(
-                ProductImageRegisterRequest.builder()
-                        .productId(product.getId())
-                        .image(productImage)
-                        .build()
-        ));
+        eventPublisher.publishEvent(ProductCreatedEvent.builder()
+                .imageRequest(
+                    ProductImageRegisterRequest.builder()
+                            .productId(product.getId())
+                            .image(productImage)
+                            .build()
+                )
+                .build());
         return ProductResponse.from(product);
     }
 
