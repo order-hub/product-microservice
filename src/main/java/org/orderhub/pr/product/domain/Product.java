@@ -6,8 +6,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.orderhub.pr.category.domain.Category;
+import org.orderhub.pr.product.dto.request.ProductUpdateRequest;
+import org.orderhub.pr.util.HashMapConverter;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.Map;
 
 @Entity
 @Getter
@@ -25,7 +29,8 @@ public class Product {
     @JoinColumn(name = "category_id", nullable = true)
     private Category category;
 
-    private String imageUrl;
+    @Embedded
+    private ProductImage image;
 
     @Enumerated(EnumType.STRING)
     private SaleStatus saleStatus;
@@ -33,14 +38,18 @@ public class Product {
     @Enumerated(EnumType.STRING)
     private ConditionStatus conditionStatus;
 
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    @Column(columnDefinition = "jsonb")
+    @Convert(converter = HashMapConverter.class)
+    private Map<String, Object> attributes;
+
+    private Instant createdAt;
+    private Instant updatedAt;
 
     @Builder
-    public Product(String name, String price, String imageUrl, SaleStatus saleStatus, ConditionStatus conditionStatus, Category category) {
+    public Product(String name, String price, ProductImage image, SaleStatus saleStatus, ConditionStatus conditionStatus, Category category) {
         this.name = name;
         this.price = price;
-        this.imageUrl = imageUrl;
+        this.image = image;
         this.saleStatus = saleStatus;
         this.conditionStatus = conditionStatus;
         this.category = category;
@@ -49,23 +58,40 @@ public class Product {
 
     @PrePersist
     protected void onCreate() {
-        createdAt = LocalDateTime.now();
-        updatedAt = LocalDateTime.now();
+        createdAt = Instant.now();
+        updatedAt = Instant.now();
     }
 
     @PreUpdate
     protected void onUpdate() {
-        updatedAt = LocalDateTime.now();
+        updatedAt = Instant.now();
     }
 
     public Category getMajorCategory() {
         if (category == null) return null;
-        return category.getParent() != null ? category.getParent().getParent() : category.getParent();
+        Category parent = category.getParent();
+        return (parent != null && parent.getParent() != null) ? parent.getParent() : null;
     }
 
     public Category getMiddleCategory() {
         if (category == null) return null;
-        return category.getParent() == null ? category : category.getParent();
+        return category.getParent();
+    }
+
+    public void updateProductImage(ProductImage image) {
+        this.image = image;
+    }
+
+    public void updateProduct(ProductUpdateRequest request, Category updatedCategory) {
+        this.name = request.getName();
+        this.price = request.getPrice();
+        this.category = updatedCategory;
+        this.saleStatus = request.getSaleStatus();
+        this.conditionStatus = request.getConditionStatus();
+    }
+
+    public void deleteProduct() {
+        this.saleStatus = SaleStatus.DELETED;
     }
 
 }

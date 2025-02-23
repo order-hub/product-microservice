@@ -32,6 +32,42 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+	// querydsl
+	implementation 'io.github.openfeign.querydsl:querydsl-jpa:6.10.1'
+	implementation 'io.github.openfeign.querydsl:querydsl-core:6.10.1'
+
+	annotationProcessor 'io.github.openfeign.querydsl:querydsl-apt:6.10.1:jpa'
+	annotationProcessor 'jakarta.persistence:jakarta.persistence-api'
+	annotationProcessor 'jakarta.annotation:jakarta.annotation-api'
+
+	// s3
+	implementation platform('software.amazon.awssdk:bom:2.27.21')
+	implementation 'software.amazon.awssdk:s3'
+	testImplementation 'io.findify:s3mock_2.12:0.2.6'
+
+	// env
+	implementation 'io.github.cdimascio:java-dotenv:5.2.2'
+}
+
+def generatedQuerydslDir = layout.buildDirectory.dir("generated/sources/annotationProcessor/java/main").get().asFile
+
+sourceSets {
+	main {
+		java {
+			srcDirs += generatedQuerydslDir
+		}
+	}
+}
+
+tasks.withType(JavaCompile).configureEach {
+	options.compilerArgs += ["-Aquerydsl.generatedAnnotationProcessor=QUERYDSL", "-s", generatedQuerydslDir.toString()]
+}
+
+tasks.named('clean') {
+	doFirst {
+		delete generatedQuerydslDir
+	}
 }
 
 tasks.named('test') {
