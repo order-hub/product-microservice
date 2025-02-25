@@ -42,7 +42,7 @@ public class OrderDiscount {
 
     public boolean isActive() {
         Instant now = Instant.now();
-        return (startDate.isBefore(now) && endDate.isAfter(now));
+        return (getStartDate().isBefore(now) && getEndDate().isAfter(now));
     }
 
 
