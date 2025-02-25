@@ -1,4 +1,4 @@
 package org.orderhub.pr.discount.service;
 
-public interface DiscountPolicy {
+public interface DiscountService {
 }

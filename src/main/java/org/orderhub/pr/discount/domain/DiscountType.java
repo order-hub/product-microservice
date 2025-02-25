@@ -1,7 +1,31 @@
 package org.orderhub.pr.discount.domain;
 
+import org.orderhub.pr.order.domain.OrderItem;
+
 public enum DiscountType {
-    FIXED, // 고정 금액 할인
-    PERCENTAGE, // 퍼센트 할인
-    THRESHOLD_PRICE, // 최소 개수 기준 단가 조정
+    FIXED {
+        @Override
+        public Long applyDiscount(ProductDiscount discount, OrderItem orderItem) {
+            return (long) Math.min(discount.getDiscountValue(), orderItem.getPrice());
+        }
+    },
+    PERCENTAGE {
+        @Override
+        public Long applyDiscount(ProductDiscount discount, OrderItem orderItem) {
+            return (long) (orderItem.getPrice() * (discount.getDiscountValue() / 100.0));
+        }
+    },
+    THRESHOLD_PRICE {
+        @Override
+        public Long applyDiscount(ProductDiscount discount, OrderItem orderItem) {
+            if (orderItem.getQuantity() >= discount.getThresholdQuantity()) {
+                Long originalTotalPrice = ((long) orderItem.getPrice() * orderItem.getQuantity());
+                Long discountedTotalPrice = ((long) discount.getDiscountUnitPrice() * orderItem.getQuantity());
+                return originalTotalPrice - discountedTotalPrice;
+            }
+            return 0L;
+        }
+    };
+
+    public abstract Long applyDiscount(ProductDiscount discount, OrderItem orderItem);
 }
