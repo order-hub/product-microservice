@@ -66,4 +66,16 @@ public class ProductDiscount {
         return discountType == DiscountType.THRESHOLD_PRICE;
     }
 
+    public void delete() {
+        this.status = DiscountStatus.DELETED;
+    }
+
+    public void restore() {
+        this.status = DiscountStatus.ACTIVE;
+    }
+
+    public boolean isDeleted() {
+        return this.status == DiscountStatus.DELETED;
+    }
+
 }

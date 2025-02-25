@@ -1,5 +1,6 @@
 package org.orderhub.pr.discount.domain;
 
+import org.orderhub.pr.category.domain.CategoryType;
 import org.orderhub.pr.order.domain.OrderItem;
 import java.time.Instant;
 
@@ -36,5 +37,10 @@ public enum DiscountType {
     private static boolean isActive(ProductDiscount discount) {
         Instant now = Instant.now();
         return discount.getStartDate().isBefore(now) && discount.getEndDate().isAfter(now);
+    }
+
+    public static DiscountType fromString(String string) {
+        if (string == null) return null;
+        return DiscountType.valueOf(string.toUpperCase());
     }
 }
