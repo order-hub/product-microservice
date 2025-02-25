@@ -26,6 +26,9 @@ public class ProductDiscount {
 
     private Integer discountValue;
 
+    private Integer thresholdQuantity; // N개 이상 구매 시 적용될 개수(THRESHOLD_PRICE 전용)
+    private Integer discountUnitPrice; // N개 이상 구매 시 적용될 개당 가격(THRESHOLD_PRICE 전용)
+
     private Instant startDate;
     private Instant endDate;
 
@@ -43,5 +46,8 @@ public class ProductDiscount {
         this.updatedAt = Instant.now();
     }
 
+    public boolean isThresholdPriceDiscount() {
+        return discountType == DiscountType.THRESHOLD_PRICE;
+    }
 
 }
