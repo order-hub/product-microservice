@@ -14,10 +14,10 @@ public class DiscountServiceImpl implements DiscountService {
 
     private final ProductDiscountRepository productDiscountRepository;
 
-    public Long applyProductDiscount(OrderItem orderItem) {
+    public Integer applyProductDiscount(OrderItem orderItem) {
         return productDiscountRepository.findByProduct(orderItem.getProduct())
                 .map(discount -> discount.getDiscountType().applyDiscount(discount, orderItem))
-                .orElse(0L);
+                .orElse(0);
     }
 
 }

@@ -6,32 +6,32 @@ import java.time.Instant;
 public enum DiscountType {
     FIXED {
         @Override
-        public Long applyDiscount(ProductDiscount discount, OrderItem orderItem) {
-            if (!isActive(discount)) return 0L;
-            return (long) Math.min(discount.getDiscountValue(), orderItem.getPrice());
+        public Integer applyDiscount(ProductDiscount discount, OrderItem orderItem) {
+            if (!isActive(discount)) return 0;
+            return Math.min(discount.getDiscountValue(), orderItem.getPrice());
         }
     },
     PERCENTAGE {
         @Override
-        public Long applyDiscount(ProductDiscount discount, OrderItem orderItem) {
-            if (!isActive(discount)) return 0L;
-            return (long) (orderItem.getPrice() * (discount.getDiscountValue() / 100.0));
+        public Integer applyDiscount(ProductDiscount discount, OrderItem orderItem) {
+            if (!isActive(discount)) return 0;
+            return (int) (orderItem.getPrice() * (discount.getDiscountValue() / 100.0));
         }
     },
     THRESHOLD_PRICE {
         @Override
-        public Long applyDiscount(ProductDiscount discount, OrderItem orderItem) {
-            if (!isActive(discount)) return 0L;
+        public Integer applyDiscount(ProductDiscount discount, OrderItem orderItem) {
+            if (!isActive(discount)) return 0;
             if (orderItem.getQuantity() >= discount.getThresholdQuantity()) {
-                Long originalTotalPrice = ((long) orderItem.getPrice() * orderItem.getQuantity());
-                Long discountedTotalPrice = ((long) discount.getDiscountUnitPrice() * orderItem.getQuantity());
+                Integer originalTotalPrice = (orderItem.getPrice() * orderItem.getQuantity());
+                Integer discountedTotalPrice = (discount.getDiscountUnitPrice() * orderItem.getQuantity());
                 return originalTotalPrice - discountedTotalPrice;
             }
-            return 0L;
+            return 0;
         }
     };
 
-    public abstract Long applyDiscount(ProductDiscount discount, OrderItem orderItem);
+    public abstract Integer applyDiscount(ProductDiscount discount, OrderItem orderItem);
 
     private static boolean isActive(ProductDiscount discount) {
         Instant now = Instant.now();

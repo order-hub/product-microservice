@@ -30,7 +30,7 @@ class DiscountTypeTest {
         when(discount.getDiscountValue()).thenReturn(2000);
         when(orderItem.getPrice()).thenReturn(5000);
 
-        Long discountAmount = DiscountType.FIXED.applyDiscount(discount, orderItem);
+        Integer discountAmount = DiscountType.FIXED.applyDiscount(discount, orderItem);
 
         assertThat(discountAmount).isEqualTo(2000L);
     }
@@ -40,9 +40,9 @@ class DiscountTypeTest {
         when(discount.getDiscountValue()).thenReturn(7000);
         when(orderItem.getPrice()).thenReturn(5000);
 
-        Long discountAmount = DiscountType.FIXED.applyDiscount(discount, orderItem);
+        Integer discountAmount = DiscountType.FIXED.applyDiscount(discount, orderItem);
 
-        assertThat(discountAmount).isEqualTo(5000L); // 최대 상품 가격만큼만 할인 가능
+        assertThat(discountAmount).isEqualTo(5000); // 최대 상품 가격만큼만 할인 가능
     }
 
     @Test
@@ -50,9 +50,9 @@ class DiscountTypeTest {
         when(discount.getDiscountValue()).thenReturn(10); // 10% 할인
         when(orderItem.getPrice()).thenReturn(5000);
 
-        Long discountAmount = DiscountType.PERCENTAGE.applyDiscount(discount, orderItem);
+        Integer discountAmount = DiscountType.PERCENTAGE.applyDiscount(discount, orderItem);
 
-        assertThat(discountAmount).isEqualTo(500L); // 5000 * 10% = 500
+        assertThat(discountAmount).isEqualTo(500); // 5000 * 10% = 500
     }
 
     @Test
@@ -62,9 +62,9 @@ class DiscountTypeTest {
         when(orderItem.getPrice()).thenReturn(5000);
         when(orderItem.getQuantity()).thenReturn(5);
 
-        Long discountAmount = DiscountType.THRESHOLD_PRICE.applyDiscount(discount, orderItem);
+        Integer discountAmount = DiscountType.THRESHOLD_PRICE.applyDiscount(discount, orderItem);
 
-        assertThat(discountAmount).isEqualTo(5000L);
+        assertThat(discountAmount).isEqualTo(5000);
         // 원래 5000 * 5 = 25000
         // 할인 적용 후 4000 * 5 = 20000
         // 차액 = 5000L
@@ -77,9 +77,9 @@ class DiscountTypeTest {
         when(orderItem.getPrice()).thenReturn(5000);
         when(orderItem.getQuantity()).thenReturn(3); // 조건 미충족
 
-        Long discountAmount = DiscountType.THRESHOLD_PRICE.applyDiscount(discount, orderItem);
+        Integer discountAmount = DiscountType.THRESHOLD_PRICE.applyDiscount(discount, orderItem);
 
-        assertThat(discountAmount).isEqualTo(0L);
+        assertThat(discountAmount).isEqualTo(0);
     }
 
     @Test
@@ -89,9 +89,9 @@ class DiscountTypeTest {
         when(discount.getStartDate()).thenReturn(Instant.now().minus(1, ChronoUnit.DAYS));
         when(discount.getEndDate()).thenReturn(Instant.now().plus(1, ChronoUnit.DAYS));
 
-        Long discountAmount = DiscountType.FIXED.applyDiscount(discount, orderItem);
+        Integer discountAmount = DiscountType.FIXED.applyDiscount(discount, orderItem);
 
-        assertThat(discountAmount).isEqualTo(2000L);
+        assertThat(discountAmount).isEqualTo(2000);
     }
 
     @Test
@@ -101,9 +101,9 @@ class DiscountTypeTest {
         when(discount.getStartDate()).thenReturn(Instant.now().plus(1, ChronoUnit.DAYS)); // 할인 시작 전
         when(discount.getEndDate()).thenReturn(Instant.now().plus(2, ChronoUnit.DAYS));
 
-        Long discountAmount = DiscountType.FIXED.applyDiscount(discount, orderItem);
+        Integer discountAmount = DiscountType.FIXED.applyDiscount(discount, orderItem);
 
-        assertThat(discountAmount).isEqualTo(0L);
+        assertThat(discountAmount).isEqualTo(0);
     }
 
     @Test
@@ -115,9 +115,9 @@ class DiscountTypeTest {
         when(discount.getStartDate()).thenReturn(Instant.now().minus(1, ChronoUnit.DAYS));
         when(discount.getEndDate()).thenReturn(Instant.now().plus(1, ChronoUnit.DAYS));
 
-        Long discountAmount = DiscountType.THRESHOLD_PRICE.applyDiscount(discount, orderItem);
+        Integer discountAmount = DiscountType.THRESHOLD_PRICE.applyDiscount(discount, orderItem);
 
-        assertThat(discountAmount).isEqualTo(5000L);
+        assertThat(discountAmount).isEqualTo(5000);
         // 원래 5000 * 5 = 25000
         // 할인 적용 후 4000 * 5 = 20000
         // 차액 = 5000L
@@ -132,8 +132,8 @@ class DiscountTypeTest {
         when(discount.getStartDate()).thenReturn(Instant.now().plus(1, ChronoUnit.DAYS)); // 할인 시작 전
         when(discount.getEndDate()).thenReturn(Instant.now().plus(2, ChronoUnit.DAYS));
 
-        Long discountAmount = DiscountType.THRESHOLD_PRICE.applyDiscount(discount, orderItem);
+        Integer discountAmount = DiscountType.THRESHOLD_PRICE.applyDiscount(discount, orderItem);
 
-        assertThat(discountAmount).isEqualTo(0L);
+        assertThat(discountAmount).isEqualTo(0);
     }
 }
