@@ -2,6 +2,7 @@ package org.orderhub.pr.discount.domain;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.orderhub.pr.product.domain.Product;
@@ -44,6 +45,17 @@ public class ProductDiscount {
     @PreUpdate
     protected void onUpdate() {
         this.updatedAt = Instant.now();
+    }
+
+    @Builder
+    public ProductDiscount(Product product, DiscountType discountType, Integer discountValue, Integer thresholdQuantity, Integer discountUnitPrice, Instant startDate, Instant endDate) {
+        this.product = product;
+        this.discountType = discountType;
+        this.discountValue = discountValue;
+        this.thresholdQuantity = thresholdQuantity;
+        this.discountUnitPrice = discountUnitPrice;
+        this.startDate = startDate;
+        this.endDate = endDate;
     }
 
     public boolean isThresholdPriceDiscount() {
