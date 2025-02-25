@@ -5,6 +5,7 @@ import org.orderhub.pr.discount.domain.DiscountStatus;
 import org.orderhub.pr.discount.domain.DiscountType;
 import org.orderhub.pr.discount.domain.ProductDiscount;
 import org.orderhub.pr.discount.dto.request.ProductDiscountCreateRequest;
+import org.orderhub.pr.discount.dto.request.ProductDiscountUpdateRequest;
 import org.orderhub.pr.discount.dto.response.ProductDiscountResponse;
 import org.orderhub.pr.discount.repository.ProductDiscountRepository;
 import org.orderhub.pr.discount.service.ProductDiscountService;
@@ -38,6 +39,10 @@ public class ProductDiscountServiceImpl implements ProductDiscountService {
                 .collect(Collectors.toList());
     }
 
+    public ProductDiscount getProductDiscountById(Long id) {
+        return productDiscountRepository.findById(id).orElseThrow(() -> new IllegalArgumentException(INVALID_DISCOUNT));
+    }
+
     @Transactional
     public ProductDiscountResponse createDiscount(ProductDiscountCreateRequest request) {
         ProductDiscount productDiscount = ProductDiscount.builder()
@@ -53,7 +58,15 @@ public class ProductDiscountServiceImpl implements ProductDiscountService {
         return ProductDiscountResponse.from(saved);
     }
 
+    @Transactional
+    public ProductDiscountResponse updateDiscount(ProductDiscountUpdateRequest request) {
+        Product newProduct = productService.getProductById(request.getProductId());
+        DiscountType newDiscountType = DiscountType.fromString(request.getDiscountType());
+        ProductDiscount productDiscount = getProductDiscountById(request.getProductId());
 
+        ProductDiscount update = productDiscount.update(newProduct, newDiscountType, request);
+        return ProductDiscountResponse.from(update);
+    }
 
     @Transactional
     public void deleteDiscount(Long id) {

@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.orderhub.pr.discount.dto.request.ProductDiscountUpdateRequest;
 import org.orderhub.pr.product.domain.Product;
 
 import java.time.Instant;
@@ -60,6 +61,17 @@ public class ProductDiscount {
         this.discountUnitPrice = discountUnitPrice;
         this.startDate = startDate;
         this.endDate = endDate;
+    }
+
+    public ProductDiscount update(Product newProduct, DiscountType newDiscountType, ProductDiscountUpdateRequest updateRequest) {
+        this.product = newProduct;
+        this.discountType = newDiscountType;
+        this.discountValue = updateRequest.getDiscountValue();
+        this.thresholdQuantity = updateRequest.getThresholdQuantity();
+        this.discountUnitPrice = updateRequest.getDiscountUnitPrice();
+        this.startDate = updateRequest.getStartDate();
+        this.endDate = updateRequest.getEndDate();
+        return this;
     }
 
     public boolean isThresholdPriceDiscount() {
