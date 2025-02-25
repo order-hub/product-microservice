@@ -33,6 +33,9 @@ public class ProductDiscount {
     private Instant startDate;
     private Instant endDate;
 
+    @Enumerated(EnumType.STRING)
+    private DiscountStatus status;
+
     private Instant createdAt;
     private Instant updatedAt;
 
@@ -40,6 +43,7 @@ public class ProductDiscount {
     protected void onCreate() {
         this.createdAt = Instant.now();
         this.updatedAt = Instant.now();
+        this.status = DiscountStatus.ACTIVE;
     }
 
     @PreUpdate
