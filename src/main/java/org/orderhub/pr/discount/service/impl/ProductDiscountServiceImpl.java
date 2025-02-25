@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.orderhub.pr.discount.exception.ExceptionMessage.INVALID_DISCOUNT;
 
@@ -26,12 +27,15 @@ public class ProductDiscountServiceImpl implements ProductDiscountService {
     private final ProductDiscountRepository productDiscountRepository;
     private final ProductService productService;
 
-    public Optional<ProductDiscount> getActiveDiscountByProduct(Product product) {
-        return productDiscountRepository.findByProductAndStatus(product, DiscountStatus.ACTIVE);
+    public Optional<ProductDiscountResponse> getActiveDiscountByProduct(Product product) {
+        return productDiscountRepository.findByProductAndStatus(product, DiscountStatus.ACTIVE)
+                .map(ProductDiscountResponse::from);
     }
 
-    public List<ProductDiscount> getAllActiveDiscounts() {
-        return productDiscountRepository.findAllByStatus(DiscountStatus.ACTIVE);
+    public List<ProductDiscountResponse> getAllActiveDiscounts() {
+        return productDiscountRepository.findAllByStatus(DiscountStatus.ACTIVE).stream()
+                .map(ProductDiscountResponse::from)
+                .collect(Collectors.toList());
     }
 
     @Transactional
@@ -48,6 +52,8 @@ public class ProductDiscountServiceImpl implements ProductDiscountService {
         ProductDiscount saved = productDiscountRepository.save(productDiscount);
         return ProductDiscountResponse.from(saved);
     }
+
+
 
     @Transactional
     public void deleteDiscount(Long id) {
