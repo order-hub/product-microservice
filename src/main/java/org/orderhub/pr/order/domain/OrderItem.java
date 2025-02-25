@@ -15,7 +15,6 @@ public class OrderItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
     private Order order;
@@ -45,7 +44,8 @@ public class OrderItem {
     }
 
     @Builder
-    public OrderItem(Product product, int quantity, int price) {
+    public OrderItem(Order order, Product product, int quantity, int price) {
+        this.order = order;
         this.product = product;
         this.quantity = quantity;
         this.price = price;
@@ -66,6 +66,15 @@ public class OrderItem {
             return;
         }
         this.updateOrderItemStatus(OrderItemStatus.CANCELLED);
+    }
+
+    static OrderItem create(Order order, Product product, int quantity, int price) {
+        return OrderItem.builder()
+                .order(order)
+                .product(product)
+                .quantity(quantity)
+                .price(price)
+                .build();
     }
 
 

@@ -2,6 +2,7 @@ package org.orderhub.pr.order.domain;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.orderhub.pr.product.domain.Product;
@@ -25,6 +26,10 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
+    private Long memberId;
+
+    private Long totalPrice;
+
     private Instant createdAt;
     private Instant updatedAt;
 
@@ -33,11 +38,17 @@ public class Order {
         this.createdAt = Instant.now();
         this.updatedAt = Instant.now();
         this.status = OrderStatus.PENDING;
+        this.totalPrice = 0L;
     }
 
     @PreUpdate
     protected void onUpdate() {
         this.updatedAt = Instant.now();
+    }
+
+    @Builder
+    public Order(Long memberId) {
+        this.memberId = memberId;
     }
 
     public void updateOrderStatus() {
@@ -53,6 +64,19 @@ public class Order {
             this.status = OrderStatus.PROCESSING;
             return;
         }
+    }
+
+    public void addOrderItem(Product product, int quantity, int price) {
+        OrderItem orderItem = OrderItem.create(this, product, quantity, price);
+        this.orderItems.add(orderItem);
+        this.totalPrice += (long) price * quantity;
+    }
+
+    public void updateOrderItemStatus(Long orderItemId, OrderItemStatus newStatus) {
+        this.orderItems.stream()
+                .filter(item -> item.getId().equals(orderItemId))
+                .findFirst()
+                .ifPresent(item -> item.updateStatus(newStatus));
     }
 
     public void removeOrderItem(OrderItem orderItem) {
