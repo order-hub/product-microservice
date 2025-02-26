@@ -65,6 +65,10 @@ public class ProductServiceImpl implements ProductService {
         return new PageImpl<>(productResponses, pageable, productResponses.size());
     }
 
+    public Product getProductById(Long id) {
+        return productRepository.findById(id).orElseThrow(() -> new IllegalArgumentException(PRODUCT_NOT_FOUND));
+    }
+
     @Transactional
     public ProductResponse createProduct(ProductRegisterRequest request, MultipartFile productImage) {
         Product product = Product.builder()
