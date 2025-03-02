@@ -18,8 +18,7 @@ public class OrderDiscountServiceImpl implements OrderDiscountService {
 
     @Transactional
     public OrderDiscountResponse create(OrderDiscountCreateRequest request) {
-        OrderDiscount createOrderDiscount = request.of(request);
-        OrderDiscount saved = orderDiscountRepository.save(createOrderDiscount);
+        OrderDiscount saved = orderDiscountRepository.save(OrderDiscountCreateRequest.of(request));
         return OrderDiscountResponse.from(saved);
     }
 

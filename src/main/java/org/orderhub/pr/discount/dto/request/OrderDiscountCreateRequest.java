@@ -25,7 +25,7 @@ public class OrderDiscountCreateRequest {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "UTC")
     private Instant endDate;
 
-    public OrderDiscount of(OrderDiscountCreateRequest request) {
+    public static OrderDiscount of(OrderDiscountCreateRequest request) {
         return OrderDiscount.builder()
                 .discountType(DiscountType.fromString(request.getDiscountType()))
                 .discountValue(request.getDiscountAmount())
