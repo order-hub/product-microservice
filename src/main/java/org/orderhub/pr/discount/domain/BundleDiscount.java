@@ -80,4 +80,12 @@ public class BundleDiscount {
         );
     }
 
+    public void updateDiscount(Integer discountValue, DiscountType discountType, Instant startDate, Instant endDate, DiscountStatus status) {
+        this.discountValue = discountValue;
+        this.discountType = discountType;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.status = status;
+    }
+
 }

@@ -71,13 +71,13 @@ public class BundleDiscountServiceImpl implements BundleDiscountService {
         List<Product> products = productService.findAllById(request.getProductIds());
         bundleDiscount.addProducts(products);
 
-        bundleDiscount = BundleDiscount.builder()
-                .discountValue(request.getDiscountValue())
-                .discountType(request.getDiscountType())
-                .startDate(request.getStartDate())
-                .endDate(request.getEndDate())
-                .status(request.getStatus())
-                .build();
+        bundleDiscount.updateDiscount(
+                request.getDiscountValue(),
+                request.getDiscountType(),
+                request.getStartDate(),
+                request.getEndDate(),
+                request.getStatus()
+        );
 
         return toResponse(bundleDiscount);
     }
