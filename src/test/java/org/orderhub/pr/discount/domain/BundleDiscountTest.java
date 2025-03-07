@@ -21,16 +21,20 @@ class BundleDiscountTest {
     private BundleDiscount bundleDiscount;
     private Product product1;
     private Product product2;
+    private Product product3;
 
     @BeforeEach
     void setUp() {
         product1 = mock(Product.class);
         product2 = mock(Product.class);
+        product3 = mock(Product.class);
 
         when(product1.getId()).thenReturn(1L);
         when(product2.getId()).thenReturn(2L);
+        when(product3.getId()).thenReturn(3L);
         when(product1.getName()).thenReturn("맥주");
         when(product2.getName()).thenReturn("소주");
+        when(product3.getName()).thenReturn("와인");
 
         // 묶음 할인 생성
         bundleDiscount = BundleDiscount.builder()
@@ -84,6 +88,38 @@ class BundleDiscountTest {
         bundleDiscount.onUpdate();
 
         assertThat(bundleDiscount.getUpdatedAt()).isAfter(firstUpdatedAt);
+    }
+
+    @Test
+    void testClearProducts() {
+        assertThat(bundleDiscount.getBundleProducts()).hasSize(2);
+
+        bundleDiscount.clearProducts();
+
+        assertThat(bundleDiscount.getBundleProducts()).isEmpty();
+    }
+
+    @Test
+    void testAddProducts() {
+        assertThat(bundleDiscount.getBundleProducts()).hasSize(2);
+
+        bundleDiscount.addProducts(List.of(product3));
+
+        assertThat(bundleDiscount.getBundleProducts()).hasSize(3);
+        assertThat(bundleDiscount.getBundleProducts())
+                .anyMatch(bundleProduct -> bundleProduct.getProduct().getId().equals(product3.getId()));
+    }
+
+    @Test
+    void testClearAndAddProducts() {
+        assertThat(bundleDiscount.getBundleProducts()).hasSize(2);
+
+        bundleDiscount.clearProducts();
+        assertThat(bundleDiscount.getBundleProducts()).isEmpty();
+
+        bundleDiscount.addProducts(List.of(product3));
+        assertThat(bundleDiscount.getBundleProducts()).hasSize(1);
+        assertThat(bundleDiscount.getBundleProducts().get(0).getProduct().getId()).isEqualTo(product3.getId());
     }
 
 }

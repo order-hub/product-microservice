@@ -38,6 +38,10 @@ public class ProductServiceImpl implements ProductService {
     private final ApplicationEventPublisher eventPublisher;
     private final CategoryService categoryService;
 
+    public List<Product> findAllById(List<Long> ids) {
+        return productRepository.findAllById(ids);
+    }
+
     public Page<ProductResponse> getProductByPage(Pageable pageable, ProductSearchRequest searchRequest) {
         Page<Product> productPage = customProductRepository.searchProducts(searchRequest, pageable);
         List<ProductResponse> productResponses = productPage.getContent().stream()

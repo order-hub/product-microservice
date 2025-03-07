@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.orderhub.pr.product.domain.Product;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -51,12 +52,13 @@ public class BundleDiscount {
     }
 
     @Builder
-    public BundleDiscount(Integer discountValue, DiscountType discountType, List<BundleDiscountProduct> bundleProducts, Instant startDate, Instant endDate) {
+    public BundleDiscount(Integer discountValue, DiscountType discountType, List<BundleDiscountProduct> bundleProducts, Instant startDate, Instant endDate, DiscountStatus status) {
         this.discountValue = discountValue;
         this.discountType = discountType;
-        this.bundleProducts = bundleProducts;
+        this.bundleProducts = (bundleProducts != null) ? new ArrayList<>(bundleProducts) : new ArrayList<>();
         this.startDate = startDate;
         this.endDate = endDate;
+        this.status = status;
     }
 
     public boolean appliesTo(Set<Long> productIds) {
@@ -64,6 +66,26 @@ public class BundleDiscount {
                 .map(bundle -> bundle.getProduct().getId())
                 .collect(Collectors.toSet());
         return productIds.equals(bundleProductIds);
+    }
+
+    public void clearProducts() {
+        this.bundleProducts.clear();
+    }
+
+    public void addProducts(List<Product> products) {
+        this.bundleProducts.addAll(
+                products.stream()
+                        .map(product -> new BundleDiscountProduct(this, product))
+                        .toList()
+        );
+    }
+
+    public void updateDiscount(Integer discountValue, DiscountType discountType, Instant startDate, Instant endDate, DiscountStatus status) {
+        this.discountValue = discountValue;
+        this.discountType = discountType;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.status = status;
     }
 
 }

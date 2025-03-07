@@ -2,6 +2,7 @@ package org.orderhub.pr.discount.domain;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -42,6 +43,15 @@ public class OrderDiscount {
     @PreUpdate
     protected void onUpdate() {
         this.updatedAt = Instant.now();
+    }
+
+    @Builder
+    public OrderDiscount(DiscountType discountType, Integer discountValue, String provider, Instant startDate, Instant endDate) {
+        this.discountType = discountType;
+        this.discountValue = discountValue;
+        this.provider = provider;
+        this.startDate = startDate;
+        this.endDate = endDate;
     }
 
     public boolean isActive() {
