@@ -51,12 +51,13 @@ public class BundleDiscount {
     }
 
     @Builder
-    public BundleDiscount(Integer discountValue, DiscountType discountType, List<BundleDiscountProduct> bundleProducts, Instant startDate, Instant endDate) {
+    public BundleDiscount(Integer discountValue, DiscountType discountType, List<BundleDiscountProduct> bundleProducts, Instant startDate, Instant endDate, DiscountStatus status) {
         this.discountValue = discountValue;
         this.discountType = discountType;
         this.bundleProducts = bundleProducts;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.status = status;
     }
 
     public boolean appliesTo(Set<Long> productIds) {
