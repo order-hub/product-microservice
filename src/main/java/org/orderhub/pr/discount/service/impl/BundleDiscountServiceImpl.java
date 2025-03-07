@@ -3,6 +3,7 @@ package org.orderhub.pr.discount.service.impl;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.orderhub.pr.discount.domain.BundleDiscount;
+import org.orderhub.pr.discount.domain.DiscountStatus;
 import org.orderhub.pr.discount.dto.request.BundleDiscountCreateRequest;
 import org.orderhub.pr.discount.dto.request.BundleDiscountUpdateRequest;
 import org.orderhub.pr.discount.dto.response.BundleDiscountResponse;
@@ -29,12 +30,16 @@ public class BundleDiscountServiceImpl implements BundleDiscountService {
     public BundleDiscountResponse createBundleDiscount(BundleDiscountCreateRequest request) {
         List<Product> products = productService.findAllById(request.getProductIds());
 
+        if (products.isEmpty()) {
+            throw new EntityNotFoundException("No products found for given IDs: " + request.getProductIds());
+        }
+
         BundleDiscount bundleDiscount = BundleDiscount.builder()
                 .discountValue(request.getDiscountValue())
                 .discountType(request.getDiscountType())
                 .startDate(request.getStartDate())
                 .endDate(request.getEndDate())
-                .status(request.getStatus())
+                .status(DiscountStatus.ACTIVE)
                 .build();
 
         bundleDiscount.addProducts(products);
