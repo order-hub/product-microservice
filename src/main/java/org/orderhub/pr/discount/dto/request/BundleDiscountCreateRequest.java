@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import org.orderhub.pr.discount.domain.DiscountStatus;
 import org.orderhub.pr.discount.domain.DiscountType;
 
 import java.time.Instant;
@@ -19,4 +20,5 @@ public class BundleDiscountCreateRequest {
     private List<Long> productIds;
     private Instant startDate;
     private Instant endDate;
+    private DiscountStatus status;
 }
