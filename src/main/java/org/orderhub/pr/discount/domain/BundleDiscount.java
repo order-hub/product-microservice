@@ -55,7 +55,7 @@ public class BundleDiscount {
     public BundleDiscount(Integer discountValue, DiscountType discountType, List<BundleDiscountProduct> bundleProducts, Instant startDate, Instant endDate, DiscountStatus status) {
         this.discountValue = discountValue;
         this.discountType = discountType;
-        this.bundleProducts = bundleProducts;
+        this.bundleProducts = (bundleProducts != null) ? new ArrayList<>(bundleProducts) : new ArrayList<>();
         this.startDate = startDate;
         this.endDate = endDate;
         this.status = status;
