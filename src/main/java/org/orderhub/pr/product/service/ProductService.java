@@ -14,9 +14,10 @@ import java.util.List;
 public interface ProductService {
     Page<ProductResponse> getProductByPage(Pageable pageable, ProductSearchRequest searchRequest);
     Page<ProductResponse> getAllProducts(Pageable pageable);
+    Page<ProductResponse> getDeletedProducts(Pageable pageable)
     Product getProductById(Long id);
     List<Product> findAllById(List<Long> ids);
     ProductResponse createProduct(ProductRegisterRequest request, MultipartFile productImage);
     ProductResponse updateProduct(ProductUpdateRequest request, Long productId);
-
+    void deleteProduct(Long productId);
 }
