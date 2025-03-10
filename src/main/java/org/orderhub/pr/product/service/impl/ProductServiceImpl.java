@@ -13,6 +13,7 @@ import org.orderhub.pr.product.dto.request.ProductUpdateRequest;
 import org.orderhub.pr.product.dto.response.ProductResponse;
 import org.orderhub.pr.product.repository.CustomProductRepository;
 import org.orderhub.pr.product.repository.ProductRepository;
+import org.orderhub.pr.product.service.ProductImageService;
 import org.orderhub.pr.product.service.ProductService;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,6 +39,7 @@ public class ProductServiceImpl implements ProductService {
     private final CustomProductRepository customProductRepository;
     private final ApplicationEventPublisher eventPublisher;
     private final CategoryService categoryService;
+    private final ProductImageService productImageService;
 
     public List<Product> findAllById(List<Long> ids) {
         return productRepository.findAllById(ids);
@@ -74,7 +77,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Transactional
-    public ProductResponse createProduct(ProductRegisterRequest request, MultipartFile productImage) {
+    public ProductResponse createProduct(ProductRegisterRequest request, MultipartFile productImage) throws IOException {
         Product product = Product.builder()
                 .name(request.getName())
                 .category(categoryService.findById(request.getCategoryId()))
@@ -84,14 +87,24 @@ public class ProductServiceImpl implements ProductService {
                 .build();
         productRepository.save(product);
 
-        eventPublisher.publishEvent(ProductCreatedEvent.builder()
-                .imageRequest(
-                    ProductImageRegisterRequest.builder()
+        productImageService.processProductImage(ProductImageRegisterRequest.builder()
                             .productId(product.getId())
                             .image(productImage)
-                            .build()
-                )
                 .build());
+
+//        byte[] fileBytes = null;
+//        if (productImage != null && !productImage.isEmpty()) {
+//            fileBytes = productImage.getBytes();
+//        }
+//
+//        eventPublisher.publishEvent(ProductCreatedEvent.builder()
+//                .imageRequest(
+//                    ProductImageRegisterRequest.builder()
+//                            .productId(product.getId())
+//                            .image()
+//                            .build()
+//                )
+//                .build());
         return ProductResponse.from(product);
     }
 
