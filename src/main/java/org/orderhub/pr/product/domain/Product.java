@@ -1,5 +1,6 @@
 package org.orderhub.pr.product.domain;
 
+import com.vladmihalcea.hibernate.type.json.JsonType;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -7,7 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.orderhub.pr.category.domain.Category;
 import org.orderhub.pr.product.dto.request.ProductUpdateRequest;
-import org.orderhub.pr.util.HashMapConverter;
+import org.hibernate.annotations.Type;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -38,23 +39,25 @@ public class Product {
     @Enumerated(EnumType.STRING)
     private ConditionStatus conditionStatus;
 
+    @Type(value = JsonType.class)  // Hibernate-Types를 이용
     @Column(columnDefinition = "jsonb")
-    @Convert(converter = HashMapConverter.class)
     private Map<String, Object> attributes;
+
+    private String productCode;
 
     private Instant createdAt;
     private Instant updatedAt;
 
     @Builder
-    public Product(String name, String price, ProductImage image, SaleStatus saleStatus, ConditionStatus conditionStatus, Category category) {
+    public Product(String name, String price, ProductImage image, SaleStatus saleStatus, ConditionStatus conditionStatus, Category category, String productCode) {
         this.name = name;
         this.price = price;
         this.image = image;
         this.saleStatus = saleStatus;
         this.conditionStatus = conditionStatus;
         this.category = category;
+        this.productCode = productCode;
     }
-
 
     @PrePersist
     protected void onCreate() {

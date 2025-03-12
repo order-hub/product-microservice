@@ -11,7 +11,10 @@ import org.orderhub.pr.category.service.CategoryService;
 import org.orderhub.pr.product.domain.Product;
 import org.orderhub.pr.product.dto.request.ProductUpdateRequest;
 import org.orderhub.pr.product.dto.response.ProductResponse;
+import org.orderhub.pr.product.repository.CustomProductRepository;
 import org.orderhub.pr.product.repository.ProductRepository;
+import org.orderhub.pr.product.service.ProductImageService;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Optional;
@@ -31,12 +34,22 @@ class ProductServiceImplUpdateTest {
     private ProductRepository productRepository;
 
     @Mock
+    private CustomProductRepository customProductRepository;
+
+    @Mock
     private CategoryService categoryService;
+
+    @Mock
+    private ApplicationEventPublisher eventPublisher;
+
+    @Mock
+    private ProductImageService productImageService;
+
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        productService = new ProductServiceImpl(productRepository, null, null, categoryService);
+        productService = new ProductServiceImpl(productRepository, customProductRepository, eventPublisher, categoryService, productImageService);
     }
 
     @Test
