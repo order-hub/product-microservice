@@ -43,19 +43,21 @@ public class Product {
     @Column(columnDefinition = "jsonb")
     private Map<String, Object> attributes;
 
+    private String productCode;
+
     private Instant createdAt;
     private Instant updatedAt;
 
     @Builder
-    public Product(String name, String price, ProductImage image, SaleStatus saleStatus, ConditionStatus conditionStatus, Category category) {
+    public Product(String name, String price, ProductImage image, SaleStatus saleStatus, ConditionStatus conditionStatus, Category category, String productCode) {
         this.name = name;
         this.price = price;
         this.image = image;
         this.saleStatus = saleStatus;
         this.conditionStatus = conditionStatus;
         this.category = category;
+        this.productCode = productCode;
     }
-
 
     @PrePersist
     protected void onCreate() {
