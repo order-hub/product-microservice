@@ -13,4 +13,8 @@ public class InMemoryFile {
     private String originalFilename;
     private String contentType;
     private byte[] content;
+
+    public int getSize() {
+        return content.length;
+    }
 }
