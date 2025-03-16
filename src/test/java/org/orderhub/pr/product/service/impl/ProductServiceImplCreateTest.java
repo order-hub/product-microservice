@@ -44,13 +44,10 @@ class ProductServiceImplCreateTest {
     @Mock
     private ApplicationEventPublisher eventPublisher;
 
-    @Mock
-    private ProductImageService productImageService;
-
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        productService = new ProductServiceImpl(productRepository, customProductRepository, eventPublisher, categoryService, productImageService);
+        productService = new ProductServiceImpl(productRepository, customProductRepository, eventPublisher, categoryService);
     }
 
 //    @Test

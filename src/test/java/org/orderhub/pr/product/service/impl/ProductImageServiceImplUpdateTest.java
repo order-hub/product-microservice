@@ -12,7 +12,7 @@ import org.orderhub.pr.product.dto.request.ProductImageUpdateRequest;
 import org.orderhub.pr.product.repository.ProductRepository;
 import org.orderhub.pr.product.service.ProductImageService;
 import org.orderhub.pr.product.service.ProductImageUploadService;
-import org.springframework.web.multipart.MultipartFile;
+import org.orderhub.pr.util.dto.InMemoryFile;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -43,12 +43,15 @@ class ProductImageServiceImplUpdateTest {
     void shouldUpdateProductImageSuccessfully() throws IOException {
         // Given
         Long productId = 1L;
-        MultipartFile mockFile = mock(MultipartFile.class);
-        when(mockFile.getOriginalFilename()).thenReturn("updated-image.jpg");
+        InMemoryFile inMemoryFile = InMemoryFile.builder()
+                .originalFilename("updated-image.jpg")
+                .contentType("image/jpeg")
+                .content("updated image content".getBytes())
+                .build();
 
         ProductImageUpdateRequest request = ProductImageUpdateRequest.builder()
                 .productId(productId)
-                .image(mockFile)
+                .storedFile(inMemoryFile)
                 .build();
 
         String updatedImageUrl = "https://s3.amazonaws.com/test-bucket/products/1/updated-thumbnail.jpg";
@@ -64,11 +67,9 @@ class ProductImageServiceImplUpdateTest {
         ArgumentCaptor<ProductImage> imageCaptor = ArgumentCaptor.forClass(ProductImage.class);
         verify(mockProduct, times(1)).updateProductImage(imageCaptor.capture());
 
-        // 이미지 URL이 정상적으로 업데이트되었는지 검증
         ProductImage capturedImage = imageCaptor.getValue();
         assertThat(capturedImage.getImageUrl()).isEqualTo(updatedImageUrl);
 
-        // `save()` 호출 검증
         verify(productRepository, times(1)).save(mockProduct);
     }
 
@@ -77,11 +78,15 @@ class ProductImageServiceImplUpdateTest {
     void shouldThrowExceptionWhenProductNotFound() throws IOException {
         // Given
         Long nonExistentProductId = 999L;
-        MultipartFile mockFile = mock(MultipartFile.class);
+        InMemoryFile inMemoryFile = InMemoryFile.builder()
+                .originalFilename("non-existent.jpg")
+                .contentType("image/jpeg")
+                .content("dummy".getBytes())
+                .build();
 
         ProductImageUpdateRequest request = ProductImageUpdateRequest.builder()
                 .productId(nonExistentProductId)
-                .image(mockFile)
+                .storedFile(inMemoryFile)
                 .build();
 
         when(productRepository.findById(nonExistentProductId)).thenReturn(Optional.empty());
@@ -91,7 +96,6 @@ class ProductImageServiceImplUpdateTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(PRODUCT_NOT_FOUND);
 
-        // `updateProductImage()` 및 `save()`가 호출되지 않음
         verify(productImageUploadService, never()).updateProductImage(any());
         verify(productRepository, never()).save(any());
     }
