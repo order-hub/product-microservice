@@ -5,6 +5,7 @@ import org.orderhub.pr.product.aop.annotation.ValidateImage;
 import org.orderhub.pr.product.dto.request.ProductImageRegisterRequest;
 import org.orderhub.pr.product.dto.request.ProductImageUpdateRequest;
 import org.orderhub.pr.product.service.ProductImageUploadService;
+import org.orderhub.pr.util.service.InMemoryFileStorage;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,6 +20,8 @@ import java.net.URL;
 @Service
 @RequiredArgsConstructor
 public class S3ProductImageServiceImpl implements ProductImageUploadService {
+
+    private final InMemoryFileStorage inMemoryFileStorage;
 
     @Value("${aws.s3.bucket-name}")
     private String bucketName;
@@ -60,7 +63,7 @@ public class S3ProductImageServiceImpl implements ProductImageUploadService {
         return fileUrl.toExternalForm();
     }
 
-    private String getFileExtension(MultipartFile file) {
+    private String getFileExtension(Long productId, MultipartFile file) {
         String originalFilename = file.getOriginalFilename();
         return originalFilename.substring(originalFilename.lastIndexOf(".") + 1).toLowerCase();
     }

@@ -12,5 +12,5 @@ import org.springframework.web.multipart.MultipartFile;
 @NoArgsConstructor
 public class ProductImageRegisterRequest {
     private Long productId;
-    private MultipartFile image;
+    private String storedFileKey;
 }
