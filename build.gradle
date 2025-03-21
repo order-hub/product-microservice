@@ -49,6 +49,12 @@ dependencies {
 	implementation 'software.amazon.awssdk:s3'
 	testImplementation 'io.findify:s3mock_2.12:0.2.6'
 
+	// kafka
+	implementation 'org.springframework.kafka:spring-kafka'
+
+	// serialize
+	implementation 'com.fasterxml.jackson.core:jackson-databind'
+
 	// env
 	implementation 'io.github.cdimascio:java-dotenv:5.2.2'
 }

@@ -6,15 +6,13 @@ import org.orderhub.pr.category.service.CategoryService;
 import org.orderhub.pr.product.domain.Product;
 import org.orderhub.pr.product.domain.SaleStatus;
 import org.orderhub.pr.product.domain.event.ProductCreatedEvent;
-import org.orderhub.pr.product.dto.request.ProductImageRegisterRequest;
-import org.orderhub.pr.product.dto.request.ProductRegisterRequest;
-import org.orderhub.pr.product.dto.request.ProductSearchRequest;
-import org.orderhub.pr.product.dto.request.ProductUpdateRequest;
+import org.orderhub.pr.product.dto.request.*;
 import org.orderhub.pr.product.dto.response.ProductResponse;
 import org.orderhub.pr.product.repository.CustomProductRepository;
 import org.orderhub.pr.product.repository.ProductRepository;
 import org.orderhub.pr.product.service.ProductImageService;
 import org.orderhub.pr.product.service.ProductService;
+import org.orderhub.pr.product.service.producer.ProductEventProducer;
 import org.orderhub.pr.util.dto.InMemoryFile;
 import org.orderhub.pr.util.service.InMemoryFileStorage;
 import org.springframework.context.ApplicationEventPublisher;
@@ -41,6 +39,7 @@ public class ProductServiceImpl implements ProductService {
     private final CustomProductRepository customProductRepository;
     private final ApplicationEventPublisher eventPublisher;
     private final CategoryService categoryService;
+    private final ProductEventProducer productEventProducer;
 
     public List<Product> findAllById(List<Long> ids) {
         return productRepository.findAllById(ids);
@@ -115,6 +114,14 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.findById(productId).orElseThrow(() -> new IllegalArgumentException(PRODUCT_NOT_FOUND));
         Category category = categoryService.findById(request.getCategoryId());
         product.updateProduct(request, category);
+
+        productEventProducer.sendProductUpdate(
+                ProductUpdateEventRequest.builder()
+                        .productId(productId)
+                        .name(request.getName())
+                        .price(request.getPrice())
+                        .build()
+        );
         return ProductResponse.from(product);
     }
 
