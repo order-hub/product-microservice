@@ -5,6 +5,8 @@ import org.orderhub.pr.product.aop.annotation.ValidateImage;
 import org.orderhub.pr.product.dto.request.ProductImageRegisterRequest;
 import org.orderhub.pr.product.dto.request.ProductImageUpdateRequest;
 import org.orderhub.pr.product.service.ProductImageUploadService;
+import org.orderhub.pr.util.dto.InMemoryFile;
+import org.orderhub.pr.util.service.InMemoryFileStorage;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,28 +29,28 @@ public class S3ProductImageServiceImpl implements ProductImageUploadService {
 
     @ValidateImage
     public String registerProductImage(ProductImageRegisterRequest productImageRegisterRequest) throws IOException {
-        String fileKey = generateFileKey(productImageRegisterRequest.getProductId(), productImageRegisterRequest.getImage());
-        return uploadToS3(productImageRegisterRequest.getImage(), fileKey);
+        String fileKey = generateFileKey(productImageRegisterRequest.getProductId(), productImageRegisterRequest.getStoredFile());
+        return uploadToS3(productImageRegisterRequest.getStoredFile(), fileKey);
     }
 
     @ValidateImage
     public String updateProductImage(ProductImageUpdateRequest productImageUpdateRequest) throws IOException {
-        String fileKey = generateFileKey(productImageUpdateRequest.getProductId(), productImageUpdateRequest.getImage());
-        return uploadToS3(productImageUpdateRequest.getImage(), fileKey);
+        String fileKey = generateFileKey(productImageUpdateRequest.getProductId(), productImageUpdateRequest.getStoredFile());
+        return uploadToS3(productImageUpdateRequest.getStoredFile(), fileKey);
     }
 
-    private String generateFileKey(Long productId, MultipartFile file) {
-        return "products/" + productId + "/thumbnail." + getFileExtension(file);
+    private String generateFileKey(Long productId, InMemoryFile file) {
+        return "products/" + productId + "/thumbnail." + getFileExtension(file.getOriginalFilename());
     }
 
-    private String uploadToS3(MultipartFile file, String fileKey) throws IOException {
+    private String uploadToS3(InMemoryFile file, String fileKey) throws IOException {
         PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                 .bucket(bucketName)
                 .key(fileKey)
                 .contentType(file.getContentType())
                 .build();
         s3Client.putObject(putObjectRequest,
-                software.amazon.awssdk.core.sync.RequestBody.fromBytes(file.getBytes()));
+                software.amazon.awssdk.core.sync.RequestBody.fromBytes(file.getContent()));
         S3Utilities s3Utilities = s3Client.utilities();
 
         GetUrlRequest getUrlRequest = GetUrlRequest.builder()
@@ -60,8 +62,7 @@ public class S3ProductImageServiceImpl implements ProductImageUploadService {
         return fileUrl.toExternalForm();
     }
 
-    private String getFileExtension(MultipartFile file) {
-        String originalFilename = file.getOriginalFilename();
-        return originalFilename.substring(originalFilename.lastIndexOf(".") + 1).toLowerCase();
+    private String getFileExtension(String originalFileName) {
+        return originalFileName.substring(originalFileName.lastIndexOf(".") + 1).toLowerCase();
     }
 }

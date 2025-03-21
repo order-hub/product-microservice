@@ -15,6 +15,8 @@ import org.orderhub.pr.product.repository.CustomProductRepository;
 import org.orderhub.pr.product.repository.ProductRepository;
 import org.orderhub.pr.product.service.ProductImageService;
 import org.orderhub.pr.product.service.ProductService;
+import org.orderhub.pr.util.dto.InMemoryFile;
+import org.orderhub.pr.util.service.InMemoryFileStorage;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -39,7 +41,6 @@ public class ProductServiceImpl implements ProductService {
     private final CustomProductRepository customProductRepository;
     private final ApplicationEventPublisher eventPublisher;
     private final CategoryService categoryService;
-    private final ProductImageService productImageService;
 
     public List<Product> findAllById(List<Long> ids) {
         return productRepository.findAllById(ids);
@@ -87,24 +88,25 @@ public class ProductServiceImpl implements ProductService {
                 .build();
         productRepository.save(product);
 
-        productImageService.processProductImage(ProductImageRegisterRequest.builder()
-                            .productId(product.getId())
-                            .image(productImage)
-                .build());
+        if (productImage != null && !productImage.isEmpty()) {
+            InMemoryFile inMemoryFile = InMemoryFile.builder()
+                    .originalFilename(productImage.getOriginalFilename())
+                    .contentType(productImage.getContentType())
+                    .content(productImage.getBytes())
+                    .build();
 
-//        byte[] fileBytes = null;
-//        if (productImage != null && !productImage.isEmpty()) {
-//            fileBytes = productImage.getBytes();
-//        }
-//
-//        eventPublisher.publishEvent(ProductCreatedEvent.builder()
-//                .imageRequest(
-//                    ProductImageRegisterRequest.builder()
-//                            .productId(product.getId())
-//                            .image()
-//                            .build()
-//                )
-//                .build());
+            ProductImageRegisterRequest imageRequest = ProductImageRegisterRequest.builder()
+                    .productId(product.getId())
+                    .storedFile(inMemoryFile)
+                    .build();
+
+            eventPublisher.publishEvent(
+                    ProductCreatedEvent.builder()
+                            .imageRequest(imageRequest)
+                            .build()
+            );
+        }
+
         return ProductResponse.from(product);
     }
 

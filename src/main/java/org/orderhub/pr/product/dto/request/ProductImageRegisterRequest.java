@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.orderhub.pr.util.dto.InMemoryFile;
 import org.springframework.web.multipart.MultipartFile;
 
 @Data
@@ -12,5 +13,5 @@ import org.springframework.web.multipart.MultipartFile;
 @NoArgsConstructor
 public class ProductImageRegisterRequest {
     private Long productId;
-    private MultipartFile image;
+    private InMemoryFile storedFile;
 }

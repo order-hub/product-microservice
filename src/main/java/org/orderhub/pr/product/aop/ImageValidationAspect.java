@@ -5,6 +5,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.orderhub.pr.system.config.ImageConfig;
+import org.orderhub.pr.util.dto.InMemoryFile;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,7 +29,7 @@ public class ImageValidationAspect {
         Set<String> validExtensions = imageConfig.getSupportedExtensionsSet();
 
         Arrays.stream(args).forEach(arg -> {
-            if (arg instanceof MultipartFile file) {
+            if (arg instanceof InMemoryFile file) {
                 validateFileSize(file);
                 validateFileExtension(file, validExtensions);
             }
@@ -36,13 +37,13 @@ public class ImageValidationAspect {
         return joinPoint.proceed(args);
     }
 
-    private void validateFileSize(MultipartFile file) {
+    private void validateFileSize(InMemoryFile file) {
         if (file.getSize() > imageConfig.getMaxFileSize()) {
             throw new IllegalArgumentException(FILE_SIZE_EXCEEDED);
         }
     }
 
-    private void validateFileExtension(MultipartFile file, Set<String> validExtensions) {
+    private void validateFileExtension(InMemoryFile file, Set<String> validExtensions) {
         String originalFilename = file.getOriginalFilename();
         if (originalFilename == null || !originalFilename.contains(".")) {
             throw new IllegalArgumentException(INVALID_FILE_FORMAT);

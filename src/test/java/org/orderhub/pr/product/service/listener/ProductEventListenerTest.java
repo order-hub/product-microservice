@@ -9,15 +9,13 @@ import org.mockito.MockitoAnnotations;
 import org.orderhub.pr.product.domain.event.ProductCreatedEvent;
 import org.orderhub.pr.product.dto.request.ProductImageRegisterRequest;
 import org.orderhub.pr.product.service.ProductImageService;
+import org.orderhub.pr.util.dto.InMemoryFile;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.io.IOException;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class ProductEventListenerTest {
@@ -37,9 +35,15 @@ class ProductEventListenerTest {
     @DisplayName("상품 생성 이벤트가 발생했을 때 이미지 처리가 정상적으로 실행되는지 검증")
     void shouldProcessProductImageOnProductCreatedEvent() throws IOException {
         // Given
+        InMemoryFile inMemoryFile = InMemoryFile.builder()
+                .originalFilename("test.jpg")
+                .contentType("image/jpeg")
+                .content("fake-image-content".getBytes())
+                .build();
+
         ProductImageRegisterRequest imageRequest = ProductImageRegisterRequest.builder()
                 .productId(1L)
-                .image(null)
+                .storedFile(inMemoryFile)
                 .build();
 
         ProductCreatedEvent event = ProductCreatedEvent.builder()
@@ -55,15 +59,22 @@ class ProductEventListenerTest {
 
         ProductImageRegisterRequest capturedRequest = captor.getValue();
         assertThat(capturedRequest.getProductId()).isEqualTo(1L);
+        // 필요하다면, capturedRequest.getStoredFile() 내용도 검증 가능
     }
 
     @Test
     @DisplayName("예외 발생 시 정상적으로 처리되는지 검증")
     void shouldHandleExceptionWhenProcessingImageFails() throws IOException {
         // Given
+        InMemoryFile inMemoryFile = InMemoryFile.builder()
+                .originalFilename("error.jpg")
+                .contentType("image/jpeg")
+                .content("some-broken-image".getBytes())
+                .build();
+
         ProductImageRegisterRequest imageRequest = ProductImageRegisterRequest.builder()
                 .productId(2L)
-                .image(null)
+                .storedFile(inMemoryFile)
                 .build();
 
         ProductCreatedEvent event = ProductCreatedEvent.builder()

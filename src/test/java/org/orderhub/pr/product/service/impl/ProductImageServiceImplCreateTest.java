@@ -12,6 +12,7 @@ import org.orderhub.pr.product.dto.request.ProductImageRegisterRequest;
 import org.orderhub.pr.product.repository.ProductRepository;
 import org.orderhub.pr.product.service.ProductImageService;
 import org.orderhub.pr.product.service.ProductImageUploadService;
+import org.orderhub.pr.util.dto.InMemoryFile;  // InMemoryFile 임포트
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -43,13 +44,15 @@ class ProductImageServiceImplCreateTest {
     void shouldProcessProductImageSuccessfully() throws IOException {
         // Given
         Long productId = 1L;
-        MultipartFile mockFile = mock(MultipartFile.class);
-        when(mockFile.getOriginalFilename()).thenReturn("test.jpg");
-        when(mockFile.getBytes()).thenReturn("image content".getBytes());
+        InMemoryFile inMemoryFile = InMemoryFile.builder()
+                .originalFilename("test.jpg")
+                .contentType("image/jpeg")
+                .content("image content".getBytes())
+                .build();
 
         ProductImageRegisterRequest request = ProductImageRegisterRequest.builder()
                 .productId(productId)
-                .image(mockFile)
+                .storedFile(inMemoryFile)
                 .build();
 
         String mockImageUrl = "https://s3.amazonaws.com/test-bucket/products/1/thumbnail.jpg";
@@ -72,12 +75,15 @@ class ProductImageServiceImplCreateTest {
     void shouldThrowExceptionWhenProductNotFound() throws IOException {
         // Given
         Long nonExistentProductId = 999L;
-        MultipartFile mockFile = mock(MultipartFile.class);
-        when(mockFile.getOriginalFilename()).thenReturn("test.jpg");
+        InMemoryFile inMemoryFile = InMemoryFile.builder()
+                .originalFilename("test.jpg")
+                .contentType("image/jpeg")
+                .content("image content".getBytes())
+                .build();
 
         ProductImageRegisterRequest request = ProductImageRegisterRequest.builder()
                 .productId(nonExistentProductId)
-                .image(mockFile)
+                .storedFile(inMemoryFile)
                 .build();
 
         when(productRepository.findById(nonExistentProductId)).thenReturn(Optional.empty());
@@ -96,13 +102,15 @@ class ProductImageServiceImplCreateTest {
     void shouldUpdateProductImageCorrectly() throws IOException {
         // Given
         Long productId = 2L;
-        MultipartFile mockFile = mock(MultipartFile.class);
-        when(mockFile.getOriginalFilename()).thenReturn("image.png");
-        when(mockFile.getBytes()).thenReturn("image content".getBytes());
+        InMemoryFile inMemoryFile = InMemoryFile.builder()
+                .originalFilename("image.png")
+                .contentType("image/png")
+                .content("image content".getBytes())
+                .build();
 
         ProductImageRegisterRequest request = ProductImageRegisterRequest.builder()
                 .productId(productId)
-                .image(mockFile)
+                .storedFile(inMemoryFile)
                 .build();
 
         String mockImageUrl = "https://s3.amazonaws.com/test-bucket/products/2/thumbnail.png";
