@@ -28,7 +28,11 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
+    @Column(nullable = false)
     private Long memberId;
+
+    @Column(nullable = false)
+    private Long storeId;
 
     private Long totalPrice = 0L;
 
