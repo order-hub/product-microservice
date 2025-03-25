@@ -8,6 +8,17 @@ aws:
     supported-extensions: jpg,jpeg,png,webp
 
 spring:
+  kafka:
+    bootstrap-servers: ${KAFKA_URL}
+    consumer:
+      group-id: product-update-consumer
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
   datasource:
     url: ${DB_URL}
     username: ${DB_USERNAME}

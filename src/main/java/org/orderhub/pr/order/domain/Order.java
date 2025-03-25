@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.orderhub.pr.order.dto.request.OrderProducts;
 import org.orderhub.pr.product.domain.Product;
 
 import java.time.Instant;
@@ -27,9 +28,13 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
+    @Column(nullable = false)
     private Long memberId;
 
-    private Long totalPrice;
+    @Column(nullable = false)
+    private Long storeId;
+
+    private Long totalPrice = 0L;
 
     private Instant createdAt;
     private Instant updatedAt;
@@ -39,7 +44,6 @@ public class Order {
         this.createdAt = Instant.now();
         this.updatedAt = Instant.now();
         this.status = OrderStatus.PENDING;
-        this.totalPrice = 0L;
     }
 
     @PreUpdate

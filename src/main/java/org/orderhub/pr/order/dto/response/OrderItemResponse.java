@@ -32,7 +32,7 @@ public class OrderItemResponse {
                 .categoryName(orderItem.getProduct().getCategory().getName())
                 .price(orderItem.getPrice())
                 .quantity(orderItem.getQuantity())
-                .imageUrl(orderItem.getProduct().getImage().getImageUrl())
+                .imageUrl(orderItem.getProduct().getImage() == null ? null : orderItem.getProduct().getImage().getImageUrl())
                 .build();
     }
 
