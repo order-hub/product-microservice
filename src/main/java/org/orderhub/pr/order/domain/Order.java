@@ -30,7 +30,7 @@ public class Order {
 
     private Long memberId;
 
-    private Long totalPrice;
+    private Long totalPrice = 0L;
 
     private Instant createdAt;
     private Instant updatedAt;
@@ -40,7 +40,6 @@ public class Order {
         this.createdAt = Instant.now();
         this.updatedAt = Instant.now();
         this.status = OrderStatus.PENDING;
-        this.totalPrice = 0L;
     }
 
     @PreUpdate
