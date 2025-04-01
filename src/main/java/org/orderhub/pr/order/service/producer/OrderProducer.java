@@ -12,7 +12,7 @@ public class OrderProducer {
     private final KafkaTemplate<String, Object> kafkaTemplate;
 
     public void sendOrderCreateEvent(OrderEventRequest orderEventRequest) {
-        kafkaTemplate.send("order-create-event", orderEventRequest);
+        kafkaTemplate.send("order-created", orderEventRequest);
     }
 
 }
