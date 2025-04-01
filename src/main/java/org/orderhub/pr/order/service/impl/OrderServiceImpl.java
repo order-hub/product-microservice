@@ -3,10 +3,12 @@ package org.orderhub.pr.order.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.orderhub.pr.order.domain.Order;
 import org.orderhub.pr.order.dto.request.OrderCreateRequest;
+import org.orderhub.pr.order.dto.request.OrderEventRequest;
 import org.orderhub.pr.order.dto.request.OrderProducts;
 import org.orderhub.pr.order.dto.response.OrderResponse;
 import org.orderhub.pr.order.repository.OrderRepository;
 import org.orderhub.pr.order.service.OrderService;
+import org.orderhub.pr.order.service.producer.OrderProducer;
 import org.orderhub.pr.product.domain.Product;
 import org.orderhub.pr.product.service.ProductService;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,7 @@ public class OrderServiceImpl implements OrderService {
 
     private final ProductService productService;
     private final OrderRepository orderRepository;
+    private final OrderProducer orderProducer;
 
     @Transactional
     public OrderResponse createOrder(OrderCreateRequest request) {
@@ -30,10 +33,10 @@ public class OrderServiceImpl implements OrderService {
             Product productById = productService.getProductById(orderProducts.getProductId());
             order.addOrderItem(productById, orderProducts.getQuantity(), Integer.parseInt(productById.getPrice()));
         }
-
         order.updateOrderStatus();
-
-        return OrderResponse.from(orderRepository.save(order));
+        Order savedOrder = orderRepository.save(order);
+        orderProducer.sendOrderCreateEvent(OrderEventRequest.from(savedOrder));
+        return OrderResponse.from(savedOrder);
     }
 
 
