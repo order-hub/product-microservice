@@ -77,8 +77,9 @@ public class OrderItem {
                 .build();
     }
 
-
-
+    public void updateQuantity(int quantity) {
+        this.quantity = quantity;
+    }
 
 
 }

@@ -5,13 +5,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
-public class OrderUpdateRequest {
-    private Long id;
-    private List<OrderProducts> products;
+public class OrderItemUpdateRequest {
+    private Long orderItemId;
+    private int quantity;
 }
