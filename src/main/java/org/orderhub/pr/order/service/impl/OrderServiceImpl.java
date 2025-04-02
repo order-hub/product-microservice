@@ -56,6 +56,8 @@ public class OrderServiceImpl implements OrderService {
             }
         }
         order.updateOrderStatus();
+        Order savedOrder = orderRepository.save(order);
+        orderProducer.sendOrderUpdateEvent(OrderEventRequest.from(savedOrder));
         return OrderResponse.from(order);
     }
 
