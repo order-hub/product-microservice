@@ -5,12 +5,15 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.orderhub.pr.order.dto.request.OrderItemUpdateRequest;
 import org.orderhub.pr.order.dto.request.OrderProducts;
+import org.orderhub.pr.order.dto.request.OrderUpdateRequest;
 import org.orderhub.pr.product.domain.Product;
 
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Entity
 @Getter
@@ -90,6 +93,16 @@ public class Order {
             return;
         }
         orderItem.updateOrderItemStatus(OrderItemStatus.CANCELLED);
+    }
+
+    public void updateOrderItem(OrderItemUpdateRequest request) {
+        orderItems.stream().filter(orderItem -> orderItem.getId().equals(request.getOrderItemId()))
+                .findFirst()
+                .ifPresent(item -> item.updateQuantity(request.getQuantity()));
+    }
+
+    public Optional<OrderItem> getOrderItem(Long orderItemId) {
+        return orderItems.stream().filter(orderItem -> orderItem.getId().equals(orderItemId)).findFirst();
     }
 
 
