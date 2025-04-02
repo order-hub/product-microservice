@@ -65,5 +65,11 @@ public class OrderServiceImpl implements OrderService {
         return orderRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Order not found"));
     }
 
+    public void deleteOrder(Long orderId) {
+        Order order = findOrderById(orderId);
+        order.delete();
+        orderProducer.sendOrderUpdateEvent(OrderEventRequest.from(order));
+    }
+
 
 }

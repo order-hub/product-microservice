@@ -105,6 +105,10 @@ public class Order {
         return orderItems.stream().filter(orderItem -> orderItem.getId().equals(orderItemId)).findFirst();
     }
 
+    public void delete() {
+        this.status = OrderStatus.CANCELLED;
+    }
+
 
 
 }
