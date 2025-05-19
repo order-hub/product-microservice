@@ -8,6 +8,9 @@ aws:
     supported-extensions: jpg,jpeg,png,webp
 
 spring:
+  threads:
+    virtual:
+      enabled: true
   kafka:
     bootstrap-servers: ${KAFKA_URL}
     consumer:
