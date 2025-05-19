@@ -57,6 +57,9 @@ dependencies {
 
 	// env
 	implementation 'io.github.cdimascio:java-dotenv:5.2.2'
+
+	// swagger
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0'
 }
 
 def generatedQuerydslDir = layout.buildDirectory.dir("generated/sources/annotationProcessor/java/main").get().asFile

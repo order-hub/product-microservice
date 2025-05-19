@@ -13,7 +13,11 @@ RUN ./gradlew clean bootJar --no-daemon
 FROM eclipse-temurin:21.0.2_13-jre-jammy
 WORKDIR /app
 
+# 애플리케이션 JAR 복사
 COPY --from=build /app/build/libs/*.jar app.jar
+
+# .env 파일 복사 (루트 경로로)
+COPY .env /.env
 
 EXPOSE 8080
 
